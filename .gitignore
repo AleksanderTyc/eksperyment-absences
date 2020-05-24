@@ -1,0 +1,8 @@
+venv/**/*
+static/**/*
+static/
+__pycache__/**/*
+__pycache__/
+gitignored/**/*
+
+app/app.db
