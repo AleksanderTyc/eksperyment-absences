@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% from 'bootstrap/form.html' import render_form %}
+{% from 'bootstrap/pagination.html' import render_pagination %}
+
+{% block absence_content %}
+<div class="row">
+  <div class="col-sm-5">
+    {% if user %}
+      <div class="row">
+        <div class="col-sm-2">
+          User
+        </div>
+        <div class="col-sm-3">
+          {{ user.username }}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-2">
+          About
+        </div>
+        <div class="col-sm-3">
+          {{ user.aboutme }}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-2">
+          Name
+        </div>
+        <div class="col-sm-3">
+          {{ user.name }} {{ user.surname }}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-2">
+          Email
+        </div>
+        <div class="col-sm-3">
+          {{ user.email }}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-2">
+          Last seen
+        </div>
+        <div class="col-sm-3">
+          {{ user.lastseen }}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-2">
+          Role
+        </div>
+        <div class="col-sm-3">
+          {% if user.role == 'P' %} Manager {% else %} Employee {% endif %}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-2">
+          Manager
+        </div>
+        <div class="col-sm-3">
+          {{ user.manager.username }}
+        </div>
+      </div>
+    {% endif %}
+      
+  </div>
+  <div class="col-sm-7">
+    <h3>This will be an index page some day.</h3>
+  </div>
+</div>
+{% endblock %}

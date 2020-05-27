@@ -9,7 +9,7 @@
 # Status debug w aplikacji dostepny jest w aplikacja.debug: True - debug on; False - debug off
 # Na innej konsoli wydac polecenie: python -m smtpd -n -c DebuggingServer localhost:8025
 
-# pip install flask-sqlalchemy flask-migrate
+# pip install flask flask-sqlalchemy flask-migrate pymysql
 
 # MySQL (i inne) database configuration and persistence when deploying on Docker: https://dev.mysql.com/doc/mysql-installation-excerpt/8.0/en/linux-installation-docker.html
 
@@ -31,7 +31,8 @@
 # Dziala, ale wszystkie relationships musialy byc ustawione na lazy = 'immediate'. Nie wiem jakie to ma konsekwencje.
 # Nie wiem czy jest to zwiazane z fabryka aplikacji, uruchamianiem w CLI czy z SQLite. Potrzebne sa eksperymenty.
 
+# pip install email-validator flask-login flask-wtf bootstrap-flask
 
 import app
 
-aplikacja = app.create_app()
+# ~ aplikacja = app.create_app()

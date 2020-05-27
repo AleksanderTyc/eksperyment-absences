@@ -1,12 +1,14 @@
 print( "Hello, this is models.py and my name is", __name__ )
 
-# ~ import flask_login
 import datetime
 
-from app import bazadanych
+import flask_login
 
-# ~ class User( flask_login.UserMixin, bazadanych.Model ):
-class User( bazadanych.Model ):
+from app import bazadanych
+from app import zalogowany
+
+class User( flask_login.UserMixin, bazadanych.Model ):
+# ~ class User( bazadanych.Model ):
   __tablename__ = "users" # Pozwala na zdefiniowanie innej niz domyslna "user" nazwy tabeli stowarzyszonej. Por. https://docs.sqlalchemy.org/en/13/orm/tutorial.html
   
   id = bazadanych.Column( bazadanych.Integer, primary_key = True )
@@ -56,3 +58,7 @@ class AbsenceCategory( bazadanych.Model ):
   
   def __repr__( self ):
     return 'AbsenceCategory {} described {}'.format( self.absence_category, self.absence_category_description )
+
+@zalogowany.user_loader
+def load_user( strid ):
+  return User.query.get( int( strid ) )
