@@ -59,7 +59,7 @@
           Manager
         </div>
         <div class="col-sm-3">
-          {{ user.manager.username }}
+          {% if user.manager is none %} N/A {% else %} {{ user.manager.username }} {% endif %}
         </div>
       </div>
     {% endif %}

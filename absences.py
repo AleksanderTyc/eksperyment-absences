@@ -31,8 +31,54 @@
 # Dziala, ale wszystkie relationships musialy byc ustawione na lazy = 'immediate'. Nie wiem jakie to ma konsekwencje.
 # Nie wiem czy jest to zwiazane z fabryka aplikacji, uruchamianiem w CLI czy z SQLite. Potrzebne sa eksperymenty.
 
+# przykladowy odczyt z tablicy users:
+# ~ import app
+# ~ aplikacja = app.create_app()
+# ~ with aplikacja.app_context():
+# ~   uzytkownik = app.models.User.query.get( 1 )
+# ~   uzytkownik = app.models.User.query.get( 123 )
+  # ~ uzytkownik = app.models.User.query.get( 7 )
+  # ~ uzytkownik.setPassword( "FF123" )
+  # ~ app.bazadanych.session.commit()
+
 # pip install email-validator flask-login flask-wtf bootstrap-flask
+# Generator token (password reset email, API):
+# pip install flask-mail pyjwt
+
+# Po przeniesieniu aplikacja do __init__ (przygotowanie do factory):
+# ~ with app.aplikacja.app_context():
+  # ~ uzz = app.models.User.query.filter_by( username = "ZZ" ).first()
+  # ~ uzz.setPassword( "ZZ123" )
+  # ~ uzz = app.models.User.query.filter_by( username = "AA" ).first()
+  # ~ uzz.setPassword( "AA123" )
+  # ~ uzz = app.models.User.query.filter_by( username = "BB" ).first()
+  # ~ uzz.setPassword( "BB123" )
+  # ~ uzz = app.models.User.query.filter_by( username = "CC" ).first()
+  # ~ uzz.setPassword( "CC123" )
+  # ~ uzz = app.models.User.query.filter_by( username = "DD" ).first()
+  # ~ uzz.setPassword( "DD123" )
+  # ~ uzz = app.models.User.query.filter_by( username = "EE" ).first()
+  # ~ uzz.setPassword( "EE123" )
+  # ~ uzz = app.models.User.query.filter_by( username = "FF" ).first()
+  # ~ uzz.setPassword( "FF123" )
+# ~ with app.aplikacja.app_context():
+  # ~ uzz = app.models.User.query.filter_by( username = "CC" ).first()
+  # ~ uzz.verifyPassword( "CC123" )
+
+# ~ with app.aplikacja.app_context():
+  # ~ kateg = app.models.AbsenceCategory.query.get( 4 )
+  # ~ print( kateg )
+  # ~ kateg_abs = kateg.absences # Lista?
+  # ~ print( kateg_abs )
+  # ~ kabs0 = kateg_abs[0]
+  # ~ print( kabs0.absence_category_label )
+  # ~ kabs0emp = kabs0.employee
+  # ~ print( kabs0emp )
+  # ~ print( kabs0emp.absences )
+  # ~ kabs0empm = kabs0emp.manager
+  # ~ print( kabs0empm )
+  # ~ print( kabs0empm.reports )
 
 import app
 
-# ~ aplikacja = app.create_app()
+aplikacja = app.create_app()

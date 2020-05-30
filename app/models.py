@@ -2,7 +2,10 @@ print( "Hello, this is models.py and my name is", __name__ )
 
 import datetime
 
+import flask
 import flask_login
+import jwt
+import werkzeug.security
 
 from app import bazadanych
 from app import zalogowany
@@ -22,12 +25,39 @@ class User( flask_login.UserMixin, bazadanych.Model ):
   lastseen = bazadanych.Column( bazadanych.DateTime, default = datetime.datetime.utcnow )
   aboutme = bazadanych.Column( bazadanych.String( 100 ) )
 
-  absences = bazadanych.relationship( "Absence", back_populates = "employee", lazy = 'immediate' )
+  # ~ absences = bazadanych.relationship( "Absence", back_populates = "employee", lazy = 'immediate' )
+  absences = bazadanych.relationship( "Absence", back_populates = "employee" )
+
   manager = bazadanych.relationship( "User", remote_side = [id], lazy = 'immediate' )
   reports = bazadanych.relationship( "User", lazy = 'immediate' )
 
   def __repr__( self ):
     return 'User {} <{}, {}, {}>'.format( self.username, self.name, self.surname, self.email )
+
+  def setPassword( self, new_password ):
+    self.password_hash = werkzeug.security.generate_password_hash( new_password )
+    bazadanych.session.commit()
+
+  def verifyPassword( self, check_password ):
+    return werkzeug.security.check_password_hash( self.password_hash, check_password )
+
+  def createToken( self, purpose = 0, timeout = 300 ):
+    """Create JWT token. Purpose: 1 - password reset email; 2 - reserved for future use (REST API). Timeout in seconds."""
+    return jwt.encode(  { "uid":self.id, "purpose":purpose, "exp":datetime.datetime.utcnow()+datetime.timedelta( seconds = timeout ) },
+                        flask.current_app.config.get( 'SECRET_KEY' ),
+                        algorithm = 'HS256' ).decode( encoding = 'UTF-8' )
+
+  def getUserFromToken( token, purpose = 0 ):
+    try:
+      token_decoded = jwt.decode( token.encode( encoding = "UTF-8" ), flask.current_app.config.get( 'SECRET_KEY' ), algorithm = 'HS256' )
+    except:
+      token_decoded = None
+    if token_decoded is None:
+      return None
+    if purpose != token_decoded[ 'purpose' ]:
+      return None
+    return token_decoded[ 'uid' ]
+    
 
 class Absence( bazadanych.Model ):
   __tablename__ = "absences"
@@ -40,8 +70,11 @@ class Absence( bazadanych.Model ):
   ts_requested = bazadanych.Column( bazadanych.DateTime, default = datetime.datetime.utcnow, index = True )
   description = bazadanych.Column( bazadanych.String( 500 ) )
 
-  employee = bazadanych.relationship( "User", back_populates = "absences", lazy = 'immediate' )
-  absence_category_label = bazadanych.relationship( "AbsenceCategory", back_populates = "absences", lazy = 'immediate' )
+  # ~ employee = bazadanych.relationship( "User", back_populates = "absences", lazy = 'immediate' )
+  employee = bazadanych.relationship( "User", back_populates = "absences" )
+  
+  # ~ absence_category_label = bazadanych.relationship( "AbsenceCategory", back_populates = "absences", lazy = 'immediate' )
+  absence_category_label = bazadanych.relationship( "AbsenceCategory", back_populates = "absences" )
   
   def __repr__( self ):
     return 'Absence of {} categorised {} between {} and {}'.format( self.userid, self.absence_category_id, self.ts_absence_start, self.ts_absence_end )
@@ -54,7 +87,8 @@ class AbsenceCategory( bazadanych.Model ):
   absence_category = bazadanych.Column( bazadanych.String( 50 ), index = True, unique = True )
   absence_category_description = bazadanych.Column( bazadanych.String( 200 ) )
 
-  absences = bazadanych.relationship( "Absence", back_populates = "absence_category_label", lazy = 'immediate' )
+  # ~ absences = bazadanych.relationship( "Absence", back_populates = "absence_category_label", lazy = 'immediate' )
+  absences = bazadanych.relationship( "Absence", back_populates = "absence_category_label" )
   
   def __repr__( self ):
     return 'AbsenceCategory {} described {}'.format( self.absence_category, self.absence_category_description )
