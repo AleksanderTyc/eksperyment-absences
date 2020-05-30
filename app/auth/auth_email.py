@@ -1,5 +1,7 @@
 print( "Hello, this is auth BP auth_email.py and my name is", __name__ )
 
+import threading
+
 import flask
 import flask_mail
 
@@ -9,11 +11,9 @@ from app import wysylacz
 # ~ import email.utils
 # ~ import smtplib
 
-def wyslijWiadomosc( wiadomosc ):
-  # ~ wysylacz = smtplib.SMTP( host = flask.current_app.config.get( 'MAIL_SERVER' ), port = flask.current_app.config.get( 'MAIL_PORT' ) )
-  # ~ wysylacz.send_message( wiadomosc )
-  wysylacz.send( wiadomosc )
-  # ~ wysylacz.quit()
+def wyslijWiadomosc( wiadomosc, aplikacja ):
+  with aplikacja.app_context():
+    wysylacz.send( wiadomosc )
   
 def send_password_reset_link( uzytkownik ):
   pwr_link = flask.url_for( 'auth.route_password_reset_execute', _external = True, token = uzytkownik.createToken( purpose = 1 ) )
@@ -31,5 +31,12 @@ def send_password_reset_link( uzytkownik ):
   # ~ wiadomosc.set_content(  )
   # ~ wiadomosc.add_alternative(  )
   # ~ print( flask.render_template( 'auth/password_reset_email.txt', password_reset_link = pwr_link ) )
-  wyslijWiadomosc( wiadomosc )
 
+# To nie dziala, bo current_app nie jest obiektem aplikacji tylko jego proxy. Porownaj https://flask.palletsprojects.com/en/1.1.x/signals/#sending-signals  
+  # ~ watek = threading.Thread( target = wyslijWiadomosc, args = (wiadomosc, flask.current_app) )
+# Wymuszamy, aby thread otrzymal prawdziwy obiekt aplikacji:
+  watek = threading.Thread( target = wyslijWiadomosc, args = (wiadomosc, flask.current_app._get_current_object()) )
+  watek.start()
+# General idea: obecnie wykonywana aplikacja, tj. application context, musi byc podana do background thread, bo wysylacz z niej korzysta,
+# np do odczytu ustawien konfiguracyjnych. Dlatego current_app musi byc argumentem wywolania funkcji, ktora bedzie wykonywana przez thread.
+# Nastepnie wewnatrz tej funkcji current_app bedzie uzyta do stworzenia context manager aplikacji i wewnatrz bedzie wywolane wysylanie email.
