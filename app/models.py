@@ -57,7 +57,10 @@ class User( flask_login.UserMixin, bazadanych.Model ):
     if purpose != token_decoded[ 'purpose' ]:
       return None
     return token_decoded[ 'uid' ]
-    
+
+  def updateLastSeen( self, argts = datetime.datetime.utcnow() ):
+    self.lastseen = argts
+
 
 class Absence( bazadanych.Model ):
   __tablename__ = "absences"

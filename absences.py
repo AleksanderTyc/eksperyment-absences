@@ -44,6 +44,7 @@
 # pip install email-validator flask-login flask-wtf bootstrap-flask
 # Generator token (password reset email, API):
 # pip install flask-mail pyjwt
+# pip install Flask-Moment
 
 # Po przeniesieniu aplikacja do __init__ (przygotowanie do factory):
 # ~ with app.aplikacja.app_context():

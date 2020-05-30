@@ -6,6 +6,7 @@ import flask_migrate
 import flask_bootstrap
 import flask_login
 import flask_mail
+import flask_moment
 
 from app import config
 # ~ from app import forms
@@ -15,6 +16,7 @@ migracje = flask_migrate.Migrate()
 stylista = flask_bootstrap.Bootstrap()
 zalogowany = flask_login.LoginManager()
 wysylacz = flask_mail.Mail()
+momencik = flask_moment.Moment()
 
 # ~ from app import models
 
@@ -38,6 +40,7 @@ def create_app( config_class = config.Config ):
   stylista.init_app( lc_app )
   zalogowany.init_app( lc_app )
   wysylacz.init_app( lc_app )
+  momencik.init_app( lc_app )
   
   from app.auth import auth as bp_auth
   lc_app.register_blueprint( bp_auth )

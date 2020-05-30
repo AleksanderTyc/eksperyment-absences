@@ -43,7 +43,7 @@
           Last seen
         </div>
         <div class="col-sm-3">
-          {{ user.lastseen }}
+          {{ moment( user.lastseen ).format( "DD/MM/YY HH:mm" ) }}
         </div>
       </div>
       <div class="row">
