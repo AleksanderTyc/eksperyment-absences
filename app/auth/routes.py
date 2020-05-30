@@ -36,7 +36,6 @@ def route_password_reset_request():
   if formatka.validate_on_submit():
     uzytkownik = models.User.query.filter_by( username = formatka.username.data ).first()
     if (uzytkownik is not None) and (uzytkownik.email == formatka.email.data):
-      print( "Wysylam email:" )
       auth_email.send_password_reset_link( uzytkownik )
     flask.flash( "Please check your email and use the link provided to reset the password." )
     return flask.redirect( flask.url_for( "auth.route_signin" ) )
@@ -44,8 +43,6 @@ def route_password_reset_request():
 
 @auth.route( '/password_reset_execute/<token>', methods = ['GET', 'POST'] )
 def route_password_reset_execute( token = None ):
-  print( "This is password reset execute with parameter:", token )
-  
   if flask_login.current_user.is_authenticated:
     return flask.redirect( flask.url_for( "hello" ) )
   else:
@@ -61,8 +58,6 @@ def route_password_reset_execute( token = None ):
       if uzytkownik is None:
         flask.flash( "Password reset link expired. Please try again." )
         return flask.redirect( flask.url_for( "auth.route_signin" ) )
-      
-  print( "This is password reset execute for user:", uzytkownik )
   formatka = forms.PasswordResetExecuteForm()
   if formatka.validate_on_submit():
     uzytkownik.setPassword( formatka.password.data )
@@ -77,14 +72,14 @@ def route_password_change():
     flask.flash( "Please log in to access the app." )
     return flask.redirect( flask.url_for( "auth.route_signin" ) )
   uzytkownik = flask_login.current_user
-  print( "This is password change for user:", uzytkownik )
   formatka = forms.PasswordChangeForm()
   if formatka.validate_on_submit():
     if uzytkownik.verifyPassword( formatka.password_old.data ):
       uzytkownik.setPassword( formatka.password_new.data )
       bazadanych.session.commit()
       flask.flash( "New password saved." )
+      return flask.redirect( flask.url_for( "hello" ) )
     else:
       flask.flash( "Current password is invalid." )
-    return flask.redirect( flask.url_for( "hello" ) )
+      return flask.redirect( flask.url_for( "auth.route_password_change" ) )
   return flask.render_template( "auth/password_change.html", title = "Password change", form = formatka, username = uzytkownik.username )
