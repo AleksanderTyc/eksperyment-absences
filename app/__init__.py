@@ -50,7 +50,9 @@ def create_app( config_class = config.Config ):
   
   @lc_app.route( '/hello' )
   def hello():
-    return flask.render_template( "index.html", title = "Main", user = flask_login.current_user )
+    uzytkownik = flask_login.current_user if flask_login.current_user.is_authenticated else None
+    print( "W hello view function, flask_login.current_user:", flask_login.current_user, "uzytkownik:", uzytkownik )
+    return flask.render_template( "index.html", title = "Main", user = uzytkownik )
     
   return lc_app
   
