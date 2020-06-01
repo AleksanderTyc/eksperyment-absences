@@ -10,7 +10,7 @@ class Config():
   AT_APPLICATION_NAME = "Absences"
 
 # SQLite
-  SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///' +os.path.join( os.path.abspath( os.path.dirname( __file__ ) ), 'app.db')
+  SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///' +os.path.join( os.path.abspath( os.path.dirname( __file__ ) ), '..', 'database', 'app.db')
 # MySQL specific
   # ~ DB_HOST = myloginpath.parse( "client" )[ "host" ] or "localhost"
   # ~ DB_USER = myloginpath.parse( "client" )[ "user" ] or "aleks"

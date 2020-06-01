@@ -58,8 +58,10 @@ class User( flask_login.UserMixin, bazadanych.Model ):
       return None
     return token_decoded[ 'uid' ]
 
-  def updateLastSeen( self, argts = datetime.datetime.utcnow() ):
-    self.lastseen = argts
+#  def updateLastSeen( self, argts = datetime.datetime.utcnow() ):
+# utcnow jest wykonywana tylko raz, podczas rejestracji funkcji (czyli ladowania modulu) i nigdy potem.
+  def updateLastSeen( self, argts = None ):
+    self.lastseen = datetime.datetime.utcnow() if argts is None else argts
 
 
 class Absence( bazadanych.Model ):
