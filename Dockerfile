@@ -9,14 +9,17 @@ RUN python -m venv venv
 COPY requirements.txt requirements.txt
 RUN ./venv/bin/pip install -r requirements.txt
 # RUN pip install -r requirements.txt
+RUN ./venv/bin/pip install gunicorn
 
-COPY boot.sh absences.py ./
-RUN chmod u+x boot.sh
-
+COPY absences.py ./
 COPY migrations migrations
 COPY app app
-
 RUN chown -R absences:absences .
+
+COPY boot.sh ./
+RUN chmod u+x boot.sh
+RUN chown absences:absences boot.sh
+
 USER absences
 
 EXPOSE 5000
@@ -31,7 +34,7 @@ ENV FLASK_APP absences.py
 # Jest on niedostepny dla requests przychodzacych z zewnatrz systemu. Z kolei 0.0.0.0 oznacza, ze serwer przyjmuje requests ze wszystkich kierunkow.
 # Mozliwe, ze zamiast tego mozna uzyc flask run -h 0.0.0.0.
 # Analogicznie dla portu mamy FLASK_RUN_PORT i opcje -p.
-ENV FLASK_RUN_HOST 0.0.0.0
+# ENV FLASK_RUN_HOST 0.0.0.0
 
 # shell form - child shell spawned
 # ENTRYPOINT ./boot.sh
@@ -44,8 +47,9 @@ ENTRYPOINT ["./boot.sh"]
 
 # Run:
 # docker run --rm -d -e MAIL_PASSWORD="wiadomoJakie" -p 8000:5000 alekscorrugatedcontainers/absences:0.03
-# docker run --rm -d -e MAIL_PASSWORD="wiadomoJakie" -p 8000:5000 -v /home/aleks/Archiwum/DataScientist/Python/PythonVirtEnvs/absences/database:/home/absences/database alekscorrugatedcontainers/absences:0.03
-# rm: delete after stop; d: background; e: environment variable; p: port mapping
+# docker run --rm -d -t -e MAIL_PASSWORD="wiadomoJakie" -p 8000:5000 -v /home/aleks/Archiwum/DataScientist/Python/PythonVirtEnvs/absences/database:/home/absences/database alekscorrugatedcontainers/absences:0.03
+# rm: delete after stop; d: background; t: create TTY (print output is saved to docker logs); e: environment variable; p: port mapping
+# Bez opcji t wyniki print( "..." ) nie pokazuja sie ani na konsoli ani w docker logs.
 
 # See logs:
 # docker logs <hash>
