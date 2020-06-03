@@ -62,7 +62,7 @@ See https://github.com/miguelgrinberg/flask-moment/
           Manager
         </div>
         <div class="col-sm-3">
-          {% if user.manager is none %} N/A {% else %} {{ user.manager.username }} {% endif %}
+          {% if user.manager is none %} N/A {% else %} {{ user.manager.name }} {{ user.manager.surname }} {% endif %}
         </div>
       </div>
     {% endif %}

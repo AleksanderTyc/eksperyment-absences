@@ -44,17 +44,13 @@ def create_app( config_class = config.Config ):
   
   from app.auth import auth as bp_auth
   lc_app.register_blueprint( bp_auth )
+  zalogowany.login_view = "auth.route_signin"
 
   from app.util import utility as bp_utility
   lc_app.register_blueprint( bp_utility )
   
-  @lc_app.route( '/hello' )
-  def hello():
-    uzytkownik = flask_login.current_user if flask_login.current_user.is_authenticated else None
-    print( "W hello view function, flask_login.current_user:", flask_login.current_user, "uzytkownik:", uzytkownik )
-    return flask.render_template( "index.html", title = "Main", user = uzytkownik )
-    
-  return lc_app
+  from app.applogic import application_logic as bp_application_logic
+  lc_app.register_blueprint( bp_application_logic )
   
+  return lc_app
 
-from app import routes

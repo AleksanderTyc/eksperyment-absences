@@ -24,9 +24,10 @@
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark ">
 -->
       <div class="container">
-        <a class="navbar-brand" href="{{ url_for( "hello" ) }}">Absences</a>
+        <a class="navbar-brand" href="{{ url_for( "applogic.hello" ) }}">Absences</a>
         <div class="navbar-nav ml-auto">
           {% if current_user.is_authenticated %}
+            {{ render_nav_item("applogic.route_edit_own_profile", "Edit Profile") }}
             {{ render_nav_item("auth.route_password_change", "Change password") }}
             {{ render_nav_item("auth.route_signout", "Log off") }}
           {% else %}

@@ -13,7 +13,7 @@ from app import bazadanych
 @auth.route( '/signin', methods = ['GET', 'POST'] )
 def route_signin():
   if flask_login.current_user.is_authenticated:
-    return flask.redirect( flask.url_for( "hello" ) )
+    return flask.redirect( flask.url_for( "applogic.hello" ) )
   formatka = forms.SigninForm()
   if formatka.validate_on_submit():
     uzytkownik = models.User.query.filter_by( username = formatka.username.data ).first()
@@ -21,7 +21,7 @@ def route_signin():
       flask.flash( "Invalid username or password" )
       return flask.redirect( flask.url_for( "auth.route_signin" ) )
     flask_login.login_user( uzytkownik )
-    return flask.redirect( flask.url_for( "hello" ) )
+    return flask.redirect( flask.url_for( "applogic.hello" ) )
   return flask.render_template( "auth/signin.html", title = "Log on", form = formatka )
   
 @auth.route( '/signout' )
@@ -44,7 +44,7 @@ def route_password_reset_request():
 @auth.route( '/password_reset_execute/<token>', methods = ['GET', 'POST'] )
 def route_password_reset_execute( token = None ):
   if flask_login.current_user.is_authenticated:
-    return flask.redirect( flask.url_for( "hello" ) )
+    return flask.redirect( flask.url_for( "applogic.hello" ) )
   else:
     if token is None:
       flask.flash( "Please log in to access the app." )
@@ -78,7 +78,7 @@ def route_password_change():
       uzytkownik.setPassword( formatka.password_new.data )
       bazadanych.session.commit()
       flask.flash( "New password saved." )
-      return flask.redirect( flask.url_for( "hello" ) )
+      return flask.redirect( flask.url_for( "applogic.hello" ) )
     else:
       flask.flash( "Current password is invalid." )
       return flask.redirect( flask.url_for( "auth.route_password_change" ) )

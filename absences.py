@@ -3,6 +3,11 @@
 # Chyba niepotrzebne [aleks@f31 microblog]$ python -m venv venv
 # [aleks@f31 microblog]$ . venv/bin/activate
 # (venv) $ export FLASK_APP=absences.py
+# Przyklady uruchomienia:
+# flask run
+# flask run -h 0.0.0.0 -p 5000
+# gunicorn --access-logfile - -b 0.0.0.0:8000 absences:aplikacja
+# W przykladzie gunicorn aplikacja to nazwa instancji tworzonej w skrypcie absences.py (patrz nizej).
 
 # Debug mode: flask restart when a source file is modified; error messages are shown on web page.
 # (venv) $ export FLASK_DEBUG=1
