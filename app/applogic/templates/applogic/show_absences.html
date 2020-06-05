@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% from 'bootstrap/pagination.html' import render_pagination %}
+
+{% block absence_content %}
+{% if sort_order == 1 %} {% set sort_order_symbol = "uarr;" %} {% else %} {% set sort_order_symbol = "darr;" %} {% endif %}
+<div class="row">
+  <div class="col-sm-3">
+  </div>
+  <div class="col-sm-9">
+    <div class="row">
+      <div class="col-sm-9">
+        <h3>Absences of {{ user.name }} {{ user.surname }}.</h3>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-9">
+        <div class="table-responsive-lg">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                
+                {% if sort_by == "ts_absence_start" %}
+  <th><a href="{{ url_for( "applogic.route_show_own_absences", page = page, sort_by = "ts_absence_start", sort_order = 1-sort_order ) }}">Start &{{ sort_order_symbol }}</a></th>
+                {% else %}
+  <th><a href="{{ url_for( "applogic.route_show_own_absences", page = page, sort_by = "ts_absence_start", sort_order = 0            ) }}">Start                         </a></th>
+                {% endif %}
+                
+                {% if sort_by == "ts_absence_end" %}
+  <th><a href="{{ url_for( "applogic.route_show_own_absences", page = page, sort_by = "ts_absence_end", sort_order = 1-sort_order ) }}">End &{{ sort_order_symbol }}</a></th>
+                {% else %}
+  <th><a href="{{ url_for( "applogic.route_show_own_absences", page = page, sort_by = "ts_absence_end", sort_order = 0            ) }}">End                         </a></th>
+                {% endif %}
+                
+                {% if sort_by == "absence_category_id" %}
+  <th><a href="{{ url_for( "applogic.route_show_own_absences", page = page, sort_by = "absence_category_id", sort_order = 1-sort_order ) }}">Category &{{ sort_order_symbol }}</a></th>
+                {% else %}
+  <th><a href="{{ url_for( "applogic.route_show_own_absences", page = page, sort_by = "absence_category_id", sort_order = 0            ) }}">Category                         </a></th>
+                {% endif %}
+
+                {% if sort_by == "ts_requested" %}
+  <th><a href="{{ url_for( "applogic.route_show_own_absences", page = page, sort_by = "ts_requested", sort_order = 1-sort_order ) }}">Requested &{{ sort_order_symbol }}</a></th>
+                {% else %}
+  <th><a href="{{ url_for( "applogic.route_show_own_absences", page = page, sort_by = "ts_requested", sort_order = 0            ) }}">Requested                         </a></th>
+                {% endif %}
+                
+                {% if sort_by == "description" %}
+  <th><a href="{{ url_for( "applogic.route_show_own_absences", page = page, sort_by = "description", sort_order = 1-sort_order ) }}">Description &{{ sort_order_symbol }}</a></th>
+                {% else %}
+  <th><a href="{{ url_for( "applogic.route_show_own_absences", page = page, sort_by = "description", sort_order = 0            ) }}">Description                         </a></th>
+                {% endif %}
+                
+              </tr>
+            </thead>
+            <tbody>
+  {% if absences %}
+    {% for absence in absences %}
+      {% include "applogic/_tmpl_single_absence.html" %}
+    {% endfor %}
+  {% endif %}
+            </tbody>
+          </table>
+        
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{{ render_pagination(absences_pagination) }}
+{% endblock %}

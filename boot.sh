@@ -20,7 +20,7 @@ source venv/bin/activate
 
 # Tez dziala
 # exec gunicorn -w 4 -b 0.0.0.0:5000 absences:aplikacja
-exec gunicorn --access-logfile - -w 4 -b 0.0.0.0:5000 absences:aplikacja
+exec gunicorn --access-logfile - -w 2 -b 0.0.0.0:5000 absences:aplikacja
 
 
 #~ exec flask run -h 0.0.0.0

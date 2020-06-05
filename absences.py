@@ -9,6 +9,8 @@
 # gunicorn --access-logfile - -b 0.0.0.0:8000 absences:aplikacja
 # W przykladzie gunicorn aplikacja to nazwa instancji tworzonej w skrypcie absences.py (patrz nizej).
 
+# git rm --cached app/util/templates/util/util.html
+
 # Debug mode: flask restart when a source file is modified; error messages are shown on web page.
 # (venv) $ export FLASK_DEBUG=1
 # Status debug w aplikacji dostepny jest w aplikacja.debug: True - debug on; False - debug off

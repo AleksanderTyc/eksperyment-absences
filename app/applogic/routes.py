@@ -4,7 +4,7 @@ import flask
 import flask_login
 
 from app import bazadanych
-# ~ from app import models
+from app import models
 
 from . import application_logic
 from . import forms
@@ -41,3 +41,21 @@ def route_edit_own_profile():
     flask.flash( "User profile updated" )
     return flask.redirect( flask.url_for( "applogic.hello" ) )
   return flask.render_template( "applogic/edit_profile.html", title = "Edit own profile", form = formatka, editablefields = pola_do_edycji )
+
+
+@application_logic.route( '/show_own_absences' )
+@flask_login.login_required
+def route_show_own_absences():
+  uzytkownik = flask_login.current_user
+  nrstrony = flask.request.args.get( "page", default = 1, type = int )
+  sortowanie_kolumna = flask.request.args.get( "sort_by", default = "ts_absence_start", type = str )
+  sortowanie_porzadek = flask.request.args.get( "sort_order", default = 0, type = int )
+  # ~ posty = uzytkownik.returnOwnPosts().all()
+  print( "Proba odczytu absences dla userid", uzytkownik.id, type( uzytkownik.id ), "strona, kolumna, porzadek", nrstrony, sortowanie_kolumna, sortowanie_porzadek )
+  # ~ nieobecnosci = uzytkownik.returnOwnAbsences().paginate( page = nrstrony, per_page = flask.current_app.config.get( "AT_ITEMS_PER_PAGE" ), error_out = False )
+  nieobecnosci = uzytkownik.returnOwnAbsences()
+  nieobecnosci = nieobecnosci.order_by( models.Absence.getSortingArgument( sortowanie_kolumna, sortowanie_porzadek ) ).paginate( page = nrstrony, per_page = flask.current_app.config.get( "AT_ITEMS_PER_PAGE" ), error_out = False )
+  poprzednia = flask.url_for( "applogic.route_show_own_absences", page = nieobecnosci.prev_num ) if nieobecnosci.has_prev else None
+  nastepna = flask.url_for( "applogic.route_show_own_absences", page = nieobecnosci.next_num ) if nieobecnosci.has_next else None
+  return flask.render_template( "applogic/show_absences.html", title = "Show own absences", user = uzytkownik, absences_pagination = nieobecnosci, absences = nieobecnosci.items, page = nrstrony, sort_by = sortowanie_kolumna, sort_order = sortowanie_porzadek, ppage = poprzednia, npage = nastepna )
+

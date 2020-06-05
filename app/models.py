@@ -63,6 +63,10 @@ class User( flask_login.UserMixin, bazadanych.Model ):
   def updateLastSeen( self, argts = None ):
     self.lastseen = datetime.datetime.utcnow() if argts is None else argts
 
+  def returnOwnAbsences( self ):
+    return Absence.query.filter_by( userid = self.id )
+    # ~ return Absence.query.filter_by( userid = self.id ).order_by( Absence.ts_absence_start.desc() )
+
 
 class Absence( bazadanych.Model ):
   __tablename__ = "absences"
@@ -83,6 +87,15 @@ class Absence( bazadanych.Model ):
   
   def __repr__( self ):
     return 'Absence of {} categorised {} between {} and {}'.format( self.userid, self.absence_category_id, self.ts_absence_start, self.ts_absence_end )
+
+  def getSortingArgument( sortowanie_kolumna, sortowanie_porzadek):
+    lc_slownik_pol = {
+      "absence_category_id":[Absence.absence_category_id, Absence.absence_category_id.desc()],
+      "ts_absence_start":[Absence.ts_absence_start, Absence.ts_absence_start.desc()],
+      "ts_absence_end":[Absence.ts_absence_end, Absence.ts_absence_end.desc()],
+      "ts_requested":[Absence.ts_requested, Absence.ts_requested.desc()],
+      "description":[Absence.description, Absence.description.desc()]}
+    return lc_slownik_pol.get( sortowanie_kolumna )[ sortowanie_porzadek ]
 
   
 class AbsenceCategory( bazadanych.Model ):
