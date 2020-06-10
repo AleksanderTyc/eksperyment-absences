@@ -2,6 +2,7 @@ print( "Hello, this is auth BP routes.py and my name is", __name__ )
 
 import flask
 import flask_login
+import werkzeug.urls
 
 from . import auth
 from . import forms
@@ -13,15 +14,18 @@ from app import bazadanych
 @auth.route( '/signin', methods = ['GET', 'POST'] )
 def route_signin():
   if flask_login.current_user.is_authenticated:
-    return flask.redirect( flask.url_for( "applogic.hello" ) )
+    return flask.redirect( flask.url_for( "applogic.route_headpage" ) )
   formatka = forms.SigninForm()
   if formatka.validate_on_submit():
+    adres_dalej = flask.request.args.get( "next" )
+    if (adres_dalej is not None) and (werkzeug.urls.url_parse( adres_dalej ).netloc != ""):
+      adres_dalej = None
     uzytkownik = models.User.query.filter_by( username = formatka.username.data ).first()
     if( uzytkownik == None ) or (False == uzytkownik.verifyPassword( formatka.password.data )):
       flask.flash( "Invalid username or password" )
-      return flask.redirect( flask.url_for( "auth.route_signin" ) )
+      return flask.redirect( flask.url_for( "auth.route_signin" ) if adres_dalej == None else flask.url_for( "auth.route_signin", next = adres_dalej ) )
     flask_login.login_user( uzytkownik )
-    return flask.redirect( flask.url_for( "applogic.hello" ) )
+    return flask.redirect( flask.url_for( "applogic.route_headpage" ) if adres_dalej == None else adres_dalej )
   return flask.render_template( "auth/signin.html", title = "Log on", form = formatka )
   
 @auth.route( '/signout' )
@@ -44,7 +48,7 @@ def route_password_reset_request():
 @auth.route( '/password_reset_execute/<token>', methods = ['GET', 'POST'] )
 def route_password_reset_execute( token = None ):
   if flask_login.current_user.is_authenticated:
-    return flask.redirect( flask.url_for( "applogic.hello" ) )
+    return flask.redirect( flask.url_for( "applogic.route_headpage" ) )
   else:
     if token is None:
       flask.flash( "Please log in to access the app." )
@@ -78,7 +82,7 @@ def route_password_change():
       uzytkownik.setPassword( formatka.password_new.data )
       bazadanych.session.commit()
       flask.flash( "New password saved." )
-      return flask.redirect( flask.url_for( "applogic.hello" ) )
+      return flask.redirect( flask.url_for( "applogic.route_headpage" ) )
     else:
       flask.flash( "Current password is invalid." )
       return flask.redirect( flask.url_for( "auth.route_password_change" ) )

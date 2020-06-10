@@ -24,17 +24,17 @@
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark ">
 -->
       <div class="container">
-        <a class="navbar-brand" href="{{ url_for( "applogic.hello" ) }}">Absences</a>
+        <a class="navbar-brand" href="{{ url_for( "applogic.route_headpage" ) }}">Absences</a>
         <div class="navbar-nav ml-auto">
           {% if current_user.is_authenticated %}
-            {{ render_nav_item("applogic.route_show_own_absences", "Absences") }}
+            {{ render_nav_item("applogic.route_new_absence", "New absence") }}
+            {{ render_nav_item("applogic.route_show_own_absences", "View absences") }}
             {{ render_nav_item("applogic.route_edit_own_profile", "Edit Profile") }}
             {{ render_nav_item("auth.route_password_change", "Change password") }}
             {{ render_nav_item("auth.route_signout", "Log off") }}
           {% else %}
             {{ render_nav_item("auth.route_signin", "Log on") }}
           {% endif %}
-          <a class="nav-item nav-link" href="#">Nowy</a>
         </div>
       </div>
     </nav>

@@ -9,12 +9,14 @@ from app import models
 from . import application_logic
 from . import forms
 
-@application_logic.route( '/hello' )
-def hello():
-  uzytkownik = flask_login.current_user if flask_login.current_user.is_authenticated else None
-  print( "W hello view function, flask_login.current_user:", flask_login.current_user, "uzytkownik:", uzytkownik )
-  return flask.render_template( "applogic/index.html", title = "Main", user = uzytkownik )
-  
+
+@application_logic.route( '/' )
+@application_logic.route( '/index' )
+@flask_login.login_required
+def route_headpage():
+  return flask.render_template( "applogic/index.html", title = "Main", user = flask_login.current_user )
+
+
 @application_logic.route( '/edit_profile', methods = ['GET', 'POST'] )
 @flask_login.login_required
 def route_edit_own_profile():
@@ -39,8 +41,30 @@ def route_edit_own_profile():
     uzytkownik.aboutme = formatka.aboutme.data
     bazadanych.session.commit()
     flask.flash( "User profile updated" )
-    return flask.redirect( flask.url_for( "applogic.hello" ) )
+    return flask.redirect( flask.url_for( "applogic.route_headpage" ) )
   return flask.render_template( "applogic/edit_profile.html", title = "Edit own profile", form = formatka, editablefields = pola_do_edycji )
+
+
+@application_logic.route( '/new_absence', methods = ['POST', 'GET'] )
+@flask_login.login_required
+def route_new_absence():
+  formatka = forms.UserAbsenceForm()
+  if flask.request.method == "GET":
+    formatka.choice_category.choices = [(kategoria.id, kategoria.absence_category) for kategoria in models.AbsenceCategory.query.order_by( "id" )]
+    formatka.choice_category.data = formatka.choice_category.choices[0][0]
+  if formatka.validate_on_submit():
+    nowy_rekord = models.Absence()
+    # ~ nowy_rekord.userid = flask_login.current_user.id
+    nowy_rekord.absence_category_id = formatka.choice_category.data
+    nowy_rekord.ts_absence_start = formatka.ts_absence_start.data
+    nowy_rekord.ts_absence_end = formatka.ts_absence_end.data
+    # ~ ts_requested = datetime.datetime.utcnow()
+    nowy_rekord.description = formatka.description.data
+    flask_login.current_user.absences.append( nowy_rekord )
+    bazadanych.session.commit()
+    flask.flash( "New post saved" )
+    return flask.redirect( flask.url_for( "applogic.route_headpage" ) )
+  return flask.render_template( "applogic/new_absence.html", title = "New absence", form = formatka )
 
 
 @application_logic.route( '/show_own_absences' )

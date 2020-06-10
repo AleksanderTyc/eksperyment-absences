@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% from 'bootstrap/form.html' import render_form %}
+{% from 'bootstrap/form.html' import render_field %}
+
+{% block absence_content %}
+<div class="row">
+  <div class="col-sm-3">
+  </div>
+  <div class="col-sm-9">
+    <div class="row">
+      <div class="col-sm-9">
+        <h3>Use this form to post new absence.</h3>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-9">
+        {{ render_form( form, form_type = "horizontal", horizontal_columns=('lg', 3, 9), novalidate = True ) }}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
