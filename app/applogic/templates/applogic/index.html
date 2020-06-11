@@ -74,13 +74,13 @@ See https://github.com/miguelgrinberg/flask-moment/
       <a href="{{ url_for( "applogic.route_new_absence" ) }}">Add new absence</a>
     </div>
     <div>
-      View absences.
+      <a href="{{ url_for( "applogic.route_show_own_absences" ) }}">View absences</a>
     </div>
     <div>
-      Edit profile.
+      <a href="{{ url_for( "applogic.route_export_absences" ) }}">Download absences</a>
     </div>
     <div>
-      Download absences.
+      <a href="{{ url_for( "applogic.route_edit_own_profile" ) }}">Edit profile</a>
     </div>
   </div>
 </div>

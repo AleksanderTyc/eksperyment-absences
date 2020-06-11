@@ -48,11 +48,13 @@ def route_edit_own_profile():
 @application_logic.route( '/new_absence', methods = ['POST', 'GET'] )
 @flask_login.login_required
 def route_new_absence():
+  print( "route_new_absence, method:", flask.request.method )
   formatka = forms.UserAbsenceForm()
   if flask.request.method == "GET":
     formatka.choice_category.choices = [(kategoria.id, kategoria.absence_category) for kategoria in models.AbsenceCategory.query.order_by( "id" )]
     formatka.choice_category.data = formatka.choice_category.choices[0][0]
   if formatka.validate_on_submit():
+    print( "route_new_absence, validated", formatka )
     nowy_rekord = models.Absence()
     # ~ nowy_rekord.userid = flask_login.current_user.id
     nowy_rekord.absence_category_id = formatka.choice_category.data
@@ -82,4 +84,15 @@ def route_show_own_absences():
   poprzednia = flask.url_for( "applogic.route_show_own_absences", page = nieobecnosci.prev_num ) if nieobecnosci.has_prev else None
   nastepna = flask.url_for( "applogic.route_show_own_absences", page = nieobecnosci.next_num ) if nieobecnosci.has_next else None
   return flask.render_template( "applogic/show_absences.html", title = "Show own absences", user = uzytkownik, absences_pagination = nieobecnosci, absences = nieobecnosci.items, page = nrstrony, sort_by = sortowanie_kolumna, sort_order = sortowanie_porzadek, ppage = poprzednia, npage = nastepna )
+
+@application_logic.route( '/export_absences' )
+def route_export_absences():
+# ~ https://www.designedbyaturtle.co.uk/how-to-force-the-download-of-a-file-with-http-headers-and-php/
+# ~ https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Disposition
+# ~ https://flask.palletsprojects.com/en/1.1.x/api/#flask.make_response
+  nieobecnosci = flask_login.current_user.returnOwnAbsences().order_by( models.Absence.ts_absence_start ).all()
+  odpowiedz = flask.make_response( flask.render_template( 'applogic/export_absences.csv', absences = nieobecnosci ) )
+  odpowiedz.headers['Content-Type'] = 'application/octet-stream; charset=utf-8'
+  odpowiedz.headers['Content-Disposition'] = 'attachment; filename="absences.csv"'
+  return odpowiedz
 

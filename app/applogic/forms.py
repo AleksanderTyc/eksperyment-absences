@@ -18,7 +18,7 @@ class UserProfileForm( flask_wtf.FlaskForm ):
 
 class UserAbsenceForm( flask_wtf.FlaskForm ):
   choice_category = wtforms.SelectField( "Absence category", validate_choice=False, coerce=int )
-  ts_absence_start = wtforms.DateTimeField( "Absence start", default = datetime.datetime.now, validators = [wtforms.validators.InputRequired()] )
-  ts_absence_end = wtforms.DateTimeField( "Absence end", default = datetime.datetime.now, validators = [wtforms.validators.InputRequired()] )
+  ts_absence_start = wtforms.DateTimeField( "Absence start", validators = [wtforms.validators.InputRequired()] )
+  ts_absence_end = wtforms.DateTimeField( "Absence end", validators = [wtforms.validators.InputRequired()] )
   description = wtforms.TextAreaField( "Description", validators = [wtforms.validators.Length( min = 0, max = 500 )] )
   submit = wtforms.SubmitField( "Save" )
