@@ -14,6 +14,7 @@ RUN ./venv/bin/pip install gunicorn
 COPY absences.py ./
 COPY migrations migrations
 COPY app app
+COPY static/timestamps_in_forms.js static/timestamps_in_forms.js
 RUN chown -R absences:absences .
 
 COPY boot.sh ./

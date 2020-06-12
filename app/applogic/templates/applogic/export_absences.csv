@@ -1,3 +1,3 @@
-id,absence_category,ts_absence_start,ts_absence_end,ts_requested,description
-{% for nieobecnosc in absences %}{{ nieobecnosc.id }},"{{ nieobecnosc.absence_category_label.absence_category }}","{{ nieobecnosc.ts_absence_start }}","{{ nieobecnosc.ts_absence_end }}","{{ nieobecnosc.ts_requested }}","{{ nieobecnosc.description }}"
+id,username,absence_category,absence_start_utc,absence_end_utc,requested_utc,description
+{% for nieobecnosc in absences %}{{ nieobecnosc.id }},"{{ nieobecnosc.employee.username }}","{{ nieobecnosc.absence_category_label.absence_category }}","{{ nieobecnosc.ts_absence_start }}","{{ nieobecnosc.ts_absence_end }}","{{ nieobecnosc.ts_requested }}","{{ nieobecnosc.description }}"
 {% endfor %}
