@@ -16,65 +16,83 @@
         <!-- Bootstrap CSS -->
         {{ bootstrap.load_css() }}
       {% endblock %}
+      <style>
+/*--- Bootstrap Padding Fix --*/
+[class*="col-"] {
+    padding: 1rem;
+}
+      </style>
 
       <title>{% if title %}Absences - {{ title }}{% else %}Absences - Welcome{% endif %}</title>
     {% endblock %}
   </head>
   <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark sticky-top">
 <!--
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark ">
 -->
-      <div class="container">
-        <a class="navbar-brand" href="{{ url_for( "applogic.route_headpage" ) }}">Absences</a>
-        <div class="navbar-nav ml-auto">
-          {% if current_user.is_authenticated %}
-            {{ render_nav_item("applogic.route_new_absence", "New absence") }}
-            {{ render_nav_item("applogic.route_show_own_absences", "View absences") }}
-            {{ render_nav_item("applogic.route_edit_own_profile", "Edit Profile") }}
-            {{ render_nav_item("auth.route_password_change", "Change password") }}
-            {{ render_nav_item("auth.route_signout", "Log off") }}
-          {% else %}
-            {{ render_nav_item("auth.route_signin", "Log on") }}
-          {% endif %}
+      <div class="container-fluid">
+        <a class="navbar-brand" href="{{ url_for( 'applogic.route_headpage' ) }}">Absences</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"><span class="navbar-toggler-icon"></span></button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <div class="navbar-nav ml-auto">
+            {% if current_user.is_authenticated %}
+              {{ render_nav_item( 'applogic.route_new_absence', 'New absence') }}
+              {{ render_nav_item( 'applogic.route_show_own_absences', 'View absences') }}
+              {{ render_nav_item( 'applogic.route_edit_own_profile', 'Edit Profile') }}
+              {{ render_nav_item( 'auth.route_password_change', 'Change password') }}
+              {{ render_nav_item( 'auth.route_signout', 'Log off') }}
+            {% else %}
+              {{ render_nav_item('auth.route_signin', 'Log on') }}
+            {% endif %}
+          </div>
         </div>
       </div>
     </nav>
 
     <!-- Header -->
-    <header class="bg-primary pt-5 pb-3 mb-1">
-      <div class="container h-100">
-        <div class="row h-100 align-items-center">
-          <div class="col-lg-1"></div>
-          <div class="col-lg-10">
+    <div class="container-fluid">
+      <div class="row jumbotron bg-primary">
 <!--
-            <h2 class="display-4 text-white mt-5 mb-2">Absences</h2>
+      <div class="row welcome text-center bg-primary">
 -->
-            <h5 class="text-white mt-5 mb-3">Use this web app to record your absence.</h5>
-<!--
-            <p class="mb-4 text-white-50">Use this web app to record your absence.</p>
--->
-          </div>
-          <div class="col-lg-1"></div>
+        <div class="col-12">
+          <p class="lead text-white">
+            Use this web app to record your absence.
+          </p>
         </div>
       </div>
-    </header>
+    </div>
 
     {{ render_messages() }}
     <!-- Your page content -->
-    <div class="container-fluid pt-1">
-<!--
-    <div class="container pt-1">
--->
-      {% block absence_content %}{% endblock %}
-    </div>
+    {% block absence_content %}{% endblock %}
   
-    <footer class="py-3 bg-dark fixed-bottom">
-      <div class="container">
-        <p class="m-0 text-center text-white">Project Absences maintained by Aleks Tyc.</p>
+            <hr>
+    <footer>
+<!--
+    <nav class="navbar sticky-bottom">
+-->
+<!--
+      <div class="container-fluid padding fixed-bottom">
+-->
+      <div class="container-fluid padding">
+        <div class="row text-center">
+          <div class="col-12 padding">
+            <p>
+              Project Absences maintained by Aleks Tyc.
+            </p>
+            <p>
+              <a style="padding:0.8rem" href="#"><img style="height:1.5rem" src="static/img/GitHub-Mark-64px.png"></a>
+              <a style="padding:0.8rem" href="#"><img style="height:1.5rem" src="static/img/LI-In-Bug.png"></a>
+            </p>
+          </div>
+        </div>
       </div>
-      <!-- /.container -->
+<!--
+    </nav>
+-->
     </footer>
 
     {% block scripts %}

@@ -11,12 +11,12 @@ class SigninForm( flask_wtf.FlaskForm ):
 class PasswordResetRequestForm( flask_wtf.FlaskForm ):
   username = wtforms.StringField( "Username", validators = [wtforms.validators.InputRequired()] )
   email = wtforms.StringField( "Email", validators = [wtforms.validators.InputRequired(), wtforms.validators.Email()] )
-  submit = wtforms.SubmitField( "Request password reset" )
+  submit = wtforms.SubmitField( "Submit" )
   
 class PasswordResetExecuteForm( flask_wtf.FlaskForm ):
-  password = wtforms.PasswordField( "Password", validators = [wtforms.validators.InputRequired()] )
-  password_re = wtforms.PasswordField( "Retype password", validators = [wtforms.validators.EqualTo("password", message="Passwords must match")] )
-  submit = wtforms.SubmitField( "Set new password" )
+  password = wtforms.PasswordField( "New password", validators = [wtforms.validators.InputRequired()] )
+  password_re = wtforms.PasswordField( "Retype new password", validators = [wtforms.validators.EqualTo("password", message="Passwords must match")] )
+  submit = wtforms.SubmitField( "Submit" )
   
 class PasswordChangeForm( flask_wtf.FlaskForm ):
   password_old = wtforms.PasswordField( "Current password", validators = [wtforms.validators.InputRequired()] )

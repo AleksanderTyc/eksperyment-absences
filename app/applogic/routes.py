@@ -14,7 +14,12 @@ from . import forms
 @application_logic.route( '/index' )
 @flask_login.login_required
 def route_headpage():
-  return flask.render_template( "applogic/index.html", title = "Main", user = flask_login.current_user )
+  uzytkownik = flask_login.current_user
+  sortowanie_kolumna = flask.request.args.get( "sort_by", default = "ts_absence_start", type = str )
+  sortowanie_porzadek = flask.request.args.get( "sort_order", default = 1, type = int )
+  nieobecnosci = uzytkownik.returnOwnAbsences()
+  nieobecnosci = nieobecnosci.order_by( models.Absence.getSortingArgument( "ts_absence_start", 1 ) ).paginate( page = 1, per_page = 3, error_out = False )
+  return flask.render_template( "applogic/index.html", title = "Main", user = flask_login.current_user, absences = nieobecnosci.items )
 
 
 @application_logic.route( '/edit_profile', methods = ['GET', 'POST'] )
@@ -64,7 +69,7 @@ def route_new_absence():
     nowy_rekord.description = formatka.description.data
     flask_login.current_user.absences.append( nowy_rekord )
     bazadanych.session.commit()
-    flask.flash( "New post saved" )
+    flask.flash( "New absence saved" )
     return flask.redirect( flask.url_for( "applogic.route_headpage" ) )
   return flask.render_template( "applogic/new_absence.html", title = "New absence", form = formatka )
 
@@ -75,7 +80,7 @@ def route_show_own_absences():
   uzytkownik = flask_login.current_user
   nrstrony = flask.request.args.get( "page", default = 1, type = int )
   sortowanie_kolumna = flask.request.args.get( "sort_by", default = "ts_absence_start", type = str )
-  sortowanie_porzadek = flask.request.args.get( "sort_order", default = 0, type = int )
+  sortowanie_porzadek = flask.request.args.get( "sort_order", default = 1, type = int )
   # ~ posty = uzytkownik.returnOwnPosts().all()
   print( "Proba odczytu absences dla userid", uzytkownik.id, type( uzytkownik.id ), "strona, kolumna, porzadek", nrstrony, sortowanie_kolumna, sortowanie_porzadek )
   # ~ nieobecnosci = uzytkownik.returnOwnAbsences().paginate( page = nrstrony, per_page = flask.current_app.config.get( "AT_ITEMS_PER_PAGE" ), error_out = False )

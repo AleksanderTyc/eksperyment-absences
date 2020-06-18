@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% from 'bootstrap/form.html' import render_form %}
+{% from 'bootstrap/pagination.html' import render_pagination %}
+
+{% block absence_content %}
+
+<!--- Absences -->
+<!--- Recent 3 Absences -->
+<!--- New; View; Download -->
+
+<!--- Profile -->
+<div class="container-fluid">
+  <div class="row welcome text-center">
+    <div class="col-12">
+      <h1 class="display-4">Your profile</h1>
+    </div>
+    <hr>
+  </div>
+</div>
+<div class="container-fluid">
+  <div class="row welcome text-center">
+<!--- Fixed size details L Pane 6 -->
+<!--- Update; Change Password -->
+    <div class="col-md-6 col-sm-12">
+      <p>
+        User {{ user.name }} {{ user.surname }} ({{ user.username }})
+        {% if user.manager is not none %} reports to {{ user.manager.name }} {{ user.manager.surname }} ({{ user.manager.username }}) {% endif %}.
+      </p>
+      <p>
+        {{ user.email }}
+      </p>
+    </div>
+<!--- About R Pane 6 -->
+    <div class="col-md-6 col-sm-12">
+      <p>{{ user.aboutme }}</p>
+    </div>
+  </div>
+</div>
+
+<!--- Manager section -->
+<!--- TBC -->
+
+<div class="row">
+  <div class="col-sm-5">
+    {% if user %}
+      <div class="row">
+        <div class="col-sm-2">
+          User
+        </div>
+        <div class="col-sm-3">
+          {{ user.username }}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-2">
+          About
+        </div>
+        <div class="col-sm-3">
+          {{ user.aboutme }}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-2">
+          Name
+        </div>
+        <div class="col-sm-3">
+          {{ user.name }} {{ user.surname }}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-2">
+          Email
+        </div>
+        <div class="col-sm-3">
+          {{ user.email }}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-2">
+          Last seen
+        </div>
+        <div class="col-sm-3">
+          {{ moment( user.lastseen ).format( "DD/MM/YY HH:mm" ) }}
+<!--
+See https://github.com/miguelgrinberg/flask-moment/
+-->
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-2">
+          Role
+        </div>
+        <div class="col-sm-3">
+          {% if user.role == 'P' %} Manager {% else %} Employee {% endif %}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-2">
+          Manager
+        </div>
+        <div class="col-sm-3">
+          {% if user.manager is none %} N/A {% else %} {{ user.manager.name }} {{ user.manager.surname }} {% endif %}
+        </div>
+      </div>
+    {% endif %}
+      
+  </div>
+  <div class="col-sm-7">
+    <h3>This will be an index page some day.</h3>
+    <div>
+      <a href="{{ url_for( "applogic.route_new_absence" ) }}">Add new absence</a>
+    </div>
+    <div>
+      <a href="{{ url_for( "applogic.route_show_own_absences" ) }}">View absences</a>
+    </div>
+    <div>
+      <a href="{{ url_for( "applogic.route_export_absences" ) }}">Download absences</a>
+    </div>
+    <div>
+      <a href="{{ url_for( "applogic.route_edit_own_profile" ) }}">Edit profile</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,90 @@
+{% from 'bootstrap/nav.html' import render_nav_item %}
+{% from 'bootstrap/utils.html' import render_messages %}
+
+<!doctype html>
+<html lang="en">
+  <head>
+    {% block head %}
+      <!-- Required meta tags -->
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+      {{ bootstrap.load_js() }}
+      {{ moment.include_moment() }}
+
+      {% block styles %}
+        <!-- Bootstrap CSS -->
+        {{ bootstrap.load_css() }}
+      {% endblock %}
+
+      <title>{% if title %}Absences - {{ title }}{% else %}Absences - Welcome{% endif %}</title>
+    {% endblock %}
+  </head>
+  <body>
+
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark sticky-top">
+<!--
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark ">
+-->
+      <div class="container-fluid">
+        <a class="navbar-brand" href="{{ url_for( "applogic.route_headpage" ) }}">Absences</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"><span class="navbar-toggler-icon"></span></button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <div class="navbar-nav ml-auto">
+            {% if current_user.is_authenticated %}
+              {{ render_nav_item("applogic.route_new_absence", "New absence") }}
+              {{ render_nav_item("applogic.route_show_own_absences", "View absences") }}
+              {{ render_nav_item("applogic.route_edit_own_profile", "Edit Profile") }}
+              {{ render_nav_item("auth.route_password_change", "Change password") }}
+              {{ render_nav_item("auth.route_signout", "Log off") }}
+            {% else %}
+              {{ render_nav_item("auth.route_signin", "Log on") }}
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="bg-primary pt-5 pb-3 mb-1">
+      <div class="container h-100">
+        <div class="row h-100 align-items-center">
+          <div class="col-lg-1"></div>
+          <div class="col-lg-10">
+<!--
+            <h2 class="display-4 text-white mt-5 mb-2">Absences</h2>
+-->
+            <h5 class="text-white mt-5 mb-3">Use this web app to record your absence.</h5>
+<!--
+            <p class="mb-4 text-white-50">Use this web app to record your absence.</p>
+-->
+          </div>
+          <div class="col-lg-1"></div>
+        </div>
+      </div>
+    </header>
+
+    {{ render_messages() }}
+    <!-- Your page content -->
+    <div class="container-fluid pt-1">
+<!--
+    <div class="container pt-1">
+-->
+      {% block absence_content %}{% endblock %}
+    </div>
+  
+    <footer class="py-3 bg-dark fixed-bottom">
+      <div class="container">
+        <p class="m-0 text-center text-white">Project Absences maintained by Aleks Tyc.</p>
+      </div>
+      <!-- /.container -->
+    </footer>
+
+    {% block scripts %}
+      <!-- Optional JavaScript -->
+      {# bootstrap.load_js() #}
+      {# moment.include_moment( local_js = "/static/moment-with-locales.min.js" ) #}
+      {# moment.include_moment() #}
+    {% endblock %}
+  </body>
+</html>

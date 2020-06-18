@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% from 'bootstrap/form.html' import render_form %}
+
+{% block absence_content %}
+<div class="container-fluid">
+  <div class="row welcome text-center">
+    <div class="col-12">
+      <h1 class="display-1">Please log in to access the app.</h1>
+    </div>
+    <hr>
+  </div>
+</div>
+<div class="container-fluid">
+  <div class="row text-center">
+    <div class="col-12">
+      {{ render_form( form, novalidate = True ) }}
+    </div>
+    <div class="col-12">
+        <br>
+      <p>Forgot your password? <a href="{{ url_for( 'auth.route_password_reset_request' ) }}">Request password reset.</a></p>
+      <p>No account yet? Please ask your manager to sign you up.</p>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-sm-4">
+  </div>
+  <div class="col-sm-8">
+    <div class="row">
+      <div class="col-sm-6">
+        <h3>Please log in to access the app.</h3>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-6">
+        {{ render_form( form, novalidate = True ) }}
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-sm-6">
+        <p>Forgot your password? <a href="{{ url_for( "auth.route_password_reset_request" ) }}">Request password reset.</a></p>
+        <p>No account yet? Please ask your manager to sign you up.</a></p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
