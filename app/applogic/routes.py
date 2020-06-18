@@ -47,7 +47,7 @@ def route_edit_own_profile():
     bazadanych.session.commit()
     flask.flash( "User profile updated" )
     return flask.redirect( flask.url_for( "applogic.route_headpage" ) )
-  return flask.render_template( "applogic/edit_profile.html", title = "Edit own profile", form = formatka, editablefields = pola_do_edycji )
+  return flask.render_template( "applogic/edit_profile.html", title = "Edit own profile", user = uzytkownik, form = formatka, editablefields = pola_do_edycji )
 
 
 @application_logic.route( '/new_absence', methods = ['POST', 'GET'] )

@@ -40,9 +40,10 @@
             {% if current_user.is_authenticated %}
               {{ render_nav_item( 'applogic.route_new_absence', 'New absence') }}
               {{ render_nav_item( 'applogic.route_show_own_absences', 'View absences') }}
+              {{ render_nav_item( 'applogic.route_export_absences', 'Download absences') }}
               {{ render_nav_item( 'applogic.route_edit_own_profile', 'Edit Profile') }}
               {{ render_nav_item( 'auth.route_password_change', 'Change password') }}
-              {{ render_nav_item( 'auth.route_signout', 'Log off') }}
+              {{ render_nav_item( 'auth.route_signout', '(' +current_user.username + ') Log off') }}
             {% else %}
               {{ render_nav_item('auth.route_signin', 'Log on') }}
             {% endif %}
