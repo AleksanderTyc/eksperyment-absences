@@ -8,6 +8,8 @@ import flask_login
 import flask_mail
 import flask_moment
 
+import werkzeug
+
 from app import config
 # ~ from app import forms
 
@@ -46,11 +48,37 @@ def create_app( config_class = config.Config ):
   lc_app.register_blueprint( bp_auth )
   zalogowany.login_view = "auth.route_signin"
 
+# ~ Cannot be done as a blueprint, see https://stackoverflow.com/questions/28137451/blueprint-404-errorhandler-doesnt-activate-under-blueprints-url-prefix
+  # ~ from app.errors import errors as bp_errors
+  # ~ lc_app.register_blueprint( bp_errors )
+  
   from app.util import utility as bp_utility
   lc_app.register_blueprint( bp_utility )
   
   from app.applogic import application_logic as bp_application_logic
   lc_app.register_blueprint( bp_application_logic )
   
+  @lc_app.errorhandler( werkzeug.exceptions.Unauthorized )
+  def route_error_401( blad ):
+    print( "AT: werkzeug.exceptions.Unauthorized", blad.get_response() )
+    return flask.render_template( "e401.html", argblad = blad ), 401
+
+  @lc_app.errorhandler( werkzeug.exceptions.Forbidden )
+  def route_error_403( blad ):
+    print( "AT: werkzeug.exceptions.Forbidden", blad.get_response() )
+    return flask.render_template( "e403.html", argblad = blad ), 403
+
+  @lc_app.errorhandler( werkzeug.exceptions.NotFound )
+  def route_error_404( blad ):
+    print( "AT: werkzeug.exceptions.NotFound", blad.get_response() )
+    return flask.render_template( "e404.html", argblad = blad ), 404
+
+  @lc_app.errorhandler( werkzeug.exceptions.InternalServerError )
+  def route_error_500( blad ):
+    print( "AT: werkzeug.exceptions.InternalServerError", blad.get_response() )
+    bazadanych.session.rollback()
+    return flask.render_template( "e500.html", argblad = blad ), 500
+
+
   return lc_app
 

@@ -21,6 +21,12 @@
 [class*="col-"] {
     padding: 1rem;
 }
+
+/*--- Bootstrap Button margin Fix --*/
+[class~="btn"] {
+  margin: 0.1rem;
+}
+
       </style>
 
       <title>{% if title %}Absences - {{ title }}{% else %}Absences - Welcome{% endif %}</title>
@@ -40,10 +46,10 @@
             {% if current_user.is_authenticated %}
               {{ render_nav_item( 'applogic.route_new_absence', 'New absence') }}
               {{ render_nav_item( 'applogic.route_show_own_absences', 'View absences') }}
-              {{ render_nav_item( 'applogic.route_export_absences', 'Download absences') }}
+              {{ render_nav_item( 'applogic.route_export_absences', 'Download absences', nazwauzytkownika = current_user.username ) }}
               {{ render_nav_item( 'applogic.route_edit_own_profile', 'Edit Profile') }}
               {{ render_nav_item( 'auth.route_password_change', 'Change password') }}
-              {{ render_nav_item( 'auth.route_signout', '(' +current_user.username + ') Log off') }}
+              {{ render_nav_item( 'auth.route_signout', 'Log off (' +current_user.username + ')' ) }}
             {% else %}
               {{ render_nav_item('auth.route_signin', 'Log on') }}
             {% endif %}
@@ -84,10 +90,12 @@
             <p>
               Project Absences maintained by Aleks Tyc.
             </p>
+<!--
             <p>
               <a style="padding:0.8rem" href="#"><img style="height:1.5rem" src="static/img/GitHub-Mark-64px.png"></a>
               <a style="padding:0.8rem" href="#"><img style="height:1.5rem" src="static/img/LI-In-Bug.png"></a>
             </p>
+-->
           </div>
         </div>
       </div>

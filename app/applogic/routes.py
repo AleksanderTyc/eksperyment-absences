@@ -1,5 +1,8 @@
 print( "Hello, this is applogic BP routes.py and my name is", __name__ )
 
+import datetime
+
+import werkzeug
 import flask
 import flask_login
 
@@ -90,14 +93,42 @@ def route_show_own_absences():
   nastepna = flask.url_for( "applogic.route_show_own_absences", page = nieobecnosci.next_num ) if nieobecnosci.has_next else None
   return flask.render_template( "applogic/show_absences.html", title = "Show own absences", user = uzytkownik, absences_pagination = nieobecnosci, absences = nieobecnosci.items, page = nrstrony, sort_by = sortowanie_kolumna, sort_order = sortowanie_porzadek, ppage = poprzednia, npage = nastepna )
 
+
 @application_logic.route( '/export_absences' )
-def route_export_absences():
+@application_logic.route( '/export_absences/<nazwauzytkownika>' )
+@flask_login.login_required
+def route_export_absences( nazwauzytkownika = None ):
 # ~ https://www.designedbyaturtle.co.uk/how-to-force-the-download-of-a-file-with-http-headers-and-php/
 # ~ https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Disposition
 # ~ https://flask.palletsprojects.com/en/1.1.x/api/#flask.make_response
-  nieobecnosci = flask_login.current_user.returnOwnAbsences().order_by( models.Absence.ts_absence_start ).all()
+  lcuser = None
+  if nazwauzytkownika is None:
+    if flask_login.current_user.role == 'P':
+      lcuser = None
+      czyje = 'team'
+    else:
+      raise werkzeug.exceptions.Forbidden
+  else:
+    if nazwauzytkownika == flask_login.current_user.username:
+      lcuser = flask_login.current_user
+      czyje = 'own'
+    else:
+      if flask_login.current_user.role == 'P':
+        lcuser = models.User.query.filter_by( username = nazwauzytkownika ).first()
+        if lcuser is None:
+          raise werkzeug.exceptions.Forbidden
+        else:
+          if lcuser in flask_login.current_user.reports:
+            czyje = lcuser.username
+          else:
+            raise werkzeug.exceptions.Forbidden
+      else:
+        raise werkzeug.exceptions.Forbidden
+  nieobecnosci = flask_login.current_user.returnAbsences( lcuser ).order_by( models.Absence.ts_absence_start ).all()
+  contentDisposition = '"'.join( ['attachment; filename=', '_'.join( [ 'absences', flask_login.current_user.username, czyje, datetime.datetime.utcnow().strftime( "%Y%m%d%H%M" )] ) +'.csv', "'"] )
   odpowiedz = flask.make_response( flask.render_template( 'applogic/export_absences.csv', absences = nieobecnosci ) )
   odpowiedz.headers['Content-Type'] = 'application/octet-stream; charset=utf-8'
   odpowiedz.headers['Content-Disposition'] = 'attachment; filename="absences.csv"'
+  odpowiedz.headers['Content-Disposition'] = contentDisposition
   return odpowiedz
 

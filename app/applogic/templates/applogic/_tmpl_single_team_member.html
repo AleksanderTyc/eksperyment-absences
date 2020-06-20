@@ -6,7 +6,7 @@
       <p>
         <a href="#"><button type="button" class="btn btn-outline-secondary">Edit</button></a>
         <a href="#"><button type="button" class="btn btn-outline-secondary">View absences</button></a>
-        <a href="#"><button type="button" class="btn btn-outline-secondary">Download absences</button></a>
+        <a href="{{ url_for( 'applogic.route_export_absences', nazwauzytkownika = dep_report.username ) }}"><button class="btn btn-outline-secondary">Download absences</button></a>
       </p>
     </div>
   </div>

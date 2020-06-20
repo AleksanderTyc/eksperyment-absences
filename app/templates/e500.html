@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block absence_content %}
+<div class="container">
+  <h1 class="display-8">Error 500 - server error</h1>
+  <p>Original error message:</p>
+  <p>{{ argblad }}</p>
+  <p>The administrator has been notified. Sorry for inconvenience.</p>
+  <p>Go to <a href="{{ url_for( 'applogic.route_headpage' ) }}">home page</a>.</p>
+</div>
+{% endblock %}

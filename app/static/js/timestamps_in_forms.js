@@ -1,5 +1,18 @@
+function getFormat() {
+  if( document.getElementById('ts_absence_start_vis').type === 'text' ) {
+    return "DD/MM/YYYY HH:mm";
+  } else {
+    if( document.getElementById('ts_absence_start_vis').type === 'datetime-local' ) {
+      return "YYYY-MM-DDTHH:mm";
+    } else {
+// Future - proof
+      return "DD/MM/YYYY HH:mm";
+    }
+  }
+}
+
 function zaladowaneBody() {
-  var przychodzaca, domyslny, dzien_tyg;
+  var przychodzaca, domyslny, dzien_tyg, vis_format;
 
 //~ TODO:
 //~ Potrzebne ustalanie wartosci domyslnych: https://momentjs.com/docs/#/manipulating/
@@ -20,21 +33,51 @@ function zaladowaneBody() {
     domyslny.add( 3, 'days' );
   }
   
+  vis_format = getFormat();
+  
   przychodzaca = document.getElementById('ts_absence_start').value;
   if( przychodzaca == "None" ) {
-    //~ przychodzaca = "2020-06-10 18:30:00";
     przychodzaca = domyslny.hour( 8 );
   }
-  document.getElementById('ts_absence_start_vis').value = moment( moment.utc( przychodzaca ).format() ).format( "DD/MM/YYYY HH:mm" );
-  console.log( przychodzaca )
+  //~ document.getElementById('ts_absence_start_vis').value = moment( moment.utc( przychodzaca ).format() ).format( "DD/MM/YYYY HH:mm" );
+  document.getElementById('ts_absence_start_vis').value = moment( moment.utc( przychodzaca ).format() ).format( vis_format );
+  //~ console.log( przychodzaca )
   
   przychodzaca = document.getElementById('ts_absence_end').value;
   if( przychodzaca == "None" ) {
     //~ przychodzaca = "2020-06-10 19:30:00";
     przychodzaca = domyslny.hour( 12 );
   }
-  document.getElementById('ts_absence_end_vis').value = moment( moment.utc( przychodzaca ).format() ).format( "DD/MM/YYYY HH:mm" );
-  console.log( przychodzaca )
+  //~ document.getElementById('ts_absence_end_vis').value = moment( moment.utc( przychodzaca ).format() ).format( "DD/MM/YYYY HH:mm" );
+  document.getElementById('ts_absence_end_vis').value = moment( moment.utc( przychodzaca ).format() ).format( vis_format );
+  //~ console.log( przychodzaca )
+}
+
+function date_vis_changed( poleZmienione, errPole, errTresc ) {
+  var vis_format;
+//~ TODO:
+//~ Potrzebna szczegolowa walidacja:
+//~ 1. Czy daty sa w przyszlosci.
+//~ 2. Czy daty sa wypelnione.
+//~ 3. Czy daty sa poprawne. https://www.w3schools.com/js/js_validation.asp
+  alert( "date_vis_changed: " +poleZmienione +", " +errPole +", " +errTresc );
+  document.getElementById("ts_absence_start_vis").className = "form-control";
+  document.getElementById("errMsgStart").innerHTML = null;
+  document.getElementById("ts_absence_end_vis").className = "form-control";
+  document.getElementById("errMsgEnd").innerHTML = null;
+  
+  vis_format = getFormat();
+  
+  if( !moment( document.getElementById( poleZmienione +"_vis" ).value, vis_format ).isValid() ) {
+    document.getElementById( poleZmienione +"_vis" ).className += " is-invalid";
+    document.getElementById( errPole ).innerHTML = "Absence " +errTresc +" date or time is invalid. Please correct.";
+    document.getElementById("submit").setAttribute( "disabled", true )
+  } else {
+    document.getElementById( poleZmienione ).value = moment.utc( moment( document.getElementById( poleZmienione +"_vis" ).value, vis_format ).format() ).format( "YYYY-MM-DD HH:mm:ss" );
+    document.getElementById( poleZmienione +"_vis").value = moment( moment.utc( document.getElementById( poleZmienione ).value ).format() ).format( vis_format );
+    document.getElementById("submit").removeAttribute( "disabled" );
+  }
+  console.log( "X" +document.getElementById('ts_absence_start').value +"X X" +document.getElementById('ts_absence_end').value +"X" );
 }
 
 function date_start_vis_changed() {
@@ -43,6 +86,7 @@ function date_start_vis_changed() {
 //~ 1. Czy daty sa w przyszlosci.
 //~ 2. Czy daty sa wypelnione.
 //~ 3. Czy daty sa poprawne. https://www.w3schools.com/js/js_validation.asp
+  alert( "date_start_vis_changed" );
   document.getElementById("ts_absence_start_vis").className = "form-control";
   document.getElementById("errMsgStart").innerHTML = null;
   document.getElementById("ts_absence_end_vis").className = "form-control";
@@ -65,6 +109,7 @@ function date_end_vis_changed() {
 //~ 1. Czy daty sa w przyszlosci.
 //~ 2. Czy daty sa wypelnione.
 //~ 3. Czy daty sa poprawne. https://www.w3schools.com/js/js_validation.asp
+  alert( "date_end_vis_changed" );
   document.getElementById("ts_absence_start_vis").className = "form-control";
   document.getElementById("errMsgStart").innerHTML = null;
   document.getElementById("ts_absence_end_vis").className = "form-control";

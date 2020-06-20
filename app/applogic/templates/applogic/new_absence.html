@@ -29,14 +29,14 @@
     <div class="form-group">
             <input class="form-control" id="ts_absence_start" name="ts_absence_start" required type="hidden" value="{{ form.ts_absence_start.data }}">
             <label class="form-control-label" for="ts_absence_start">Absence start</label>
-            <input onchange="date_start_vis_changed()" class="form-control" id="ts_absence_start_vis" name="ts_absence_start_vis" required type="datetime-local" value="">
+            <input onchange="date_vis_changed( 'ts_absence_start', 'errMsgStart', 'start' )" class="form-control" id="ts_absence_start_vis" name="ts_absence_start_vis" required type="datetime-local" value="">
             <div class="invalid-feedback" id="errMsgStart"></div>
     </div>
           
     <div class="form-group">
             <input class="form-control" id="ts_absence_end" name="ts_absence_end" required type="hidden" value="{{ form.ts_absence_end.data }}">
             <label class="form-control-label" for="ts_absence_end">Absence end</label>
-            <input onchange="date_end_vis_changed()" class="form-control" id="ts_absence_end_vis" name="ts_absence_end_vis" required type="datetime-local" value="">
+            <input onchange="date_vis_changed( 'ts_absence_end', 'errMsgEnd', 'end' )" class="form-control" id="ts_absence_end_vis" name="ts_absence_end_vis" required type="datetime-local" value="">
             <div class="invalid-feedback" id="errMsgEnd"></div>
     </div>
           
@@ -52,7 +52,9 @@
 </div>
 <script>
   zaladowaneBody();
-  date_start_vis_changed();
-  date_end_vis_changed();
+  date_vis_changed( 'ts_absence_start', 'errMsgStart', 'start' )
+  date_vis_changed( 'ts_absence_end', 'errMsgEnd', 'end' )
+//  date_start_vis_changed();
+//  date_end_vis_changed();
 </script>
 {% endblock %}

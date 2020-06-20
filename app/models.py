@@ -66,6 +66,14 @@ class User( flask_login.UserMixin, bazadanych.Model ):
   def returnOwnAbsences( self ):
     return Absence.query.filter_by( userid = self.id )
     # ~ return Absence.query.filter_by( userid = self.id ).order_by( Absence.ts_absence_start.desc() )
+  
+  def returnAbsences( self, ref_user ):
+    if ref_user is None:
+      # ~ zwroc team members absences
+      return Absence.query.filter( Absence.userid.in_ ([ czlonek.id for czlonek in self.reports ]) )
+    else:
+      # ~ zwroc absences uzytkownika ref_user
+      return Absence.query.filter_by( userid = ref_user.id )
 
 
 class Absence( bazadanych.Model ):
