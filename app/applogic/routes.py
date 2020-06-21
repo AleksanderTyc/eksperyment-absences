@@ -25,6 +25,17 @@ def route_headpage():
 @application_logic.route( '/edit_profile', methods = ['GET', 'POST'] )
 @flask_login.login_required
 def route_edit_own_profile():
+  # ~ TODO:
+    # ~ - manager field when showing CEO - done
+    # ~ - manager field as choice when applicable
+    # ~ - email validation - correct and unique
+    # ~ - mgr options - user name validation - unique
+    # ~ - mgr options - role as radio button
+    # ~ - mgr options - role modification check - are you sure, only when downgrading, really
+    # ~ - mgr options - mgr name modification check - are you sure, check for real modification
+    # ~ - mgr options - editable fields when editing existing profile: email, role, mgr name
+    # ~ - mgr options - editable fields when creating new user: name, surname, username, email, role, mgr name
+    # ~ - mgr options - create new user: input profile details, validate, insert to DB, send email to the new user
   uzytkownik = flask_login.current_user
   formatka = forms.UserProfileForm()
   pola_do_edycji = ['name', 'surname', 'email', 'aboutme']

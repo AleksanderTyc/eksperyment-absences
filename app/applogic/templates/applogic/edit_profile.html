@@ -44,12 +44,16 @@
    
     <div class="form-group">
             <label class="form-control-label" for="mgrusername">Manager</label>
-{% if "mgrusername" in editablefields %}
+{% if "mgrusername" in editablefields and form.mgrusername.data is not none %}
 <!--
 autofocus
 -->
 {% else %}
+  {% if form.mgrusername.data is none %}
+            <input class="form-control" id="mgrusername" name="mgrusername" type="text" value = "CEO" disabled>
+  {% else %}
             <input class="form-control" id="mgrusername" name="mgrusername" type="text" value = "{{ form.mgrusername.data }}" disabled>
+  {% endif %}
 {% endif %}
     </div>
    
