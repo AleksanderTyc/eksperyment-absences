@@ -5,6 +5,7 @@ import datetime
 import flask
 import flask_login
 import jwt
+import werkzeug
 import werkzeug.security
 
 from app import bazadanych
@@ -63,10 +64,6 @@ class User( flask_login.UserMixin, bazadanych.Model ):
   def updateLastSeen( self, argts = None ):
     self.lastseen = datetime.datetime.utcnow() if argts is None else argts
 
-  def returnOwnAbsences( self ):
-    return Absence.query.filter_by( userid = self.id )
-    # ~ return Absence.query.filter_by( userid = self.id ).order_by( Absence.ts_absence_start.desc() )
-  
   def returnAbsences( self, ref_user ):
     if ref_user is None:
       # ~ zwroc team members absences
@@ -74,6 +71,28 @@ class User( flask_login.UserMixin, bazadanych.Model ):
     else:
       # ~ zwroc absences uzytkownika ref_user
       return Absence.query.filter_by( userid = ref_user.id )
+
+  def getRelevantAbsences( self, nazwauzytkownika = None ):
+    lcuser = None
+    if nazwauzytkownika is None:
+      if flask_login.current_user.role == 'P':
+        lcuser = None
+      else:
+        raise werkzeug.exceptions.Forbidden
+    else:
+      if nazwauzytkownika == flask_login.current_user.username:
+        lcuser = flask_login.current_user
+      else:
+        if flask_login.current_user.role == 'P':
+          lcuser = User.query.filter_by( username = nazwauzytkownika ).first()
+          if lcuser is None:
+            raise werkzeug.exceptions.Forbidden
+          else:
+            if lcuser not in flask_login.current_user.reports:
+              raise werkzeug.exceptions.Forbidden
+        else:
+          raise werkzeug.exceptions.Forbidden
+    return (flask_login.current_user.returnAbsences( lcuser ), lcuser)
 
 
 class Absence( bazadanych.Model ):
@@ -98,6 +117,7 @@ class Absence( bazadanych.Model ):
 
   def getSortingArgument( sortowanie_kolumna, sortowanie_porzadek):
     lc_slownik_pol = {
+      "userid":[Absence.userid, Absence.userid.desc()],
       "absence_category_id":[Absence.absence_category_id, Absence.absence_category_id.desc()],
       "ts_absence_start":[Absence.ts_absence_start, Absence.ts_absence_start.desc()],
       "ts_absence_end":[Absence.ts_absence_end, Absence.ts_absence_end.desc()],

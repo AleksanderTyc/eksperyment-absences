@@ -17,12 +17,9 @@ from . import forms
 @application_logic.route( '/index' )
 @flask_login.login_required
 def route_headpage():
-  uzytkownik = flask_login.current_user
-  sortowanie_kolumna = flask.request.args.get( "sort_by", default = "ts_absence_start", type = str )
-  sortowanie_porzadek = flask.request.args.get( "sort_order", default = 1, type = int )
-  nieobecnosci = uzytkownik.returnOwnAbsences()
+  (nieobecnosci, uzytkownik) = flask_login.current_user.getRelevantAbsences( flask_login.current_user.username )
   nieobecnosci = nieobecnosci.order_by( models.Absence.getSortingArgument( "ts_absence_start", 1 ) ).paginate( page = 1, per_page = 3, error_out = False )
-  return flask.render_template( "applogic/index.html", title = "Main", user = flask_login.current_user, absences = nieobecnosci.items )
+  return flask.render_template( "applogic/index.html", title = "Main", user = uzytkownik, absences = nieobecnosci.items )
 
 
 @application_logic.route( '/edit_profile', methods = ['GET', 'POST'] )
@@ -38,7 +35,7 @@ def route_edit_own_profile():
     formatka.name.data = uzytkownik.name
     formatka.surname.data = uzytkownik.surname
     formatka.username.data = uzytkownik.username
-    formatka.mgrusername.data = uzytkownik.manager.username
+    formatka.mgrusername.data = uzytkownik.manager.username if uzytkownik.mgrid is not None else None
     formatka.role.data = uzytkownik.role
     formatka.email.data = uzytkownik.email
     formatka.aboutme.data = uzytkownik.aboutme
@@ -77,20 +74,21 @@ def route_new_absence():
   return flask.render_template( "applogic/new_absence.html", title = "New absence", form = formatka )
 
 
-@application_logic.route( '/show_own_absences' )
+@application_logic.route( '/show_absences' )
+@application_logic.route( '/show_absences/<nazwauzytkownika>' )
 @flask_login.login_required
-def route_show_own_absences():
-  uzytkownik = flask_login.current_user
+def route_show_absences( nazwauzytkownika = None ):
+  # ~ uzytkownik = flask_login.current_user
+  (nieobecnosci, uzytkownik) = flask_login.current_user.getRelevantAbsences( nazwauzytkownika )
   nrstrony = flask.request.args.get( "page", default = 1, type = int )
   sortowanie_kolumna = flask.request.args.get( "sort_by", default = "ts_absence_start", type = str )
   sortowanie_porzadek = flask.request.args.get( "sort_order", default = 1, type = int )
-  # ~ posty = uzytkownik.returnOwnPosts().all()
-  print( "Proba odczytu absences dla userid", uzytkownik.id, type( uzytkownik.id ), "strona, kolumna, porzadek", nrstrony, sortowanie_kolumna, sortowanie_porzadek )
-  # ~ nieobecnosci = uzytkownik.returnOwnAbsences().paginate( page = nrstrony, per_page = flask.current_app.config.get( "AT_ITEMS_PER_PAGE" ), error_out = False )
-  nieobecnosci = uzytkownik.returnOwnAbsences()
   nieobecnosci = nieobecnosci.order_by( models.Absence.getSortingArgument( sortowanie_kolumna, sortowanie_porzadek ) ).paginate( page = nrstrony, per_page = flask.current_app.config.get( "AT_ITEMS_PER_PAGE" ), error_out = False )
-  poprzednia = flask.url_for( "applogic.route_show_own_absences", page = nieobecnosci.prev_num ) if nieobecnosci.has_prev else None
-  nastepna = flask.url_for( "applogic.route_show_own_absences", page = nieobecnosci.next_num ) if nieobecnosci.has_next else None
+  # ~ posty = uzytkownik.returnOwnPosts().all()
+  # ~ print( "Proba odczytu absences dla userid", uzytkownik.id, type( uzytkownik.id ), "strona, kolumna, porzadek", nrstrony, sortowanie_kolumna, sortowanie_porzadek )
+  # ~ nieobecnosci = uzytkownik.returnOwnAbsences().paginate( page = nrstrony, per_page = flask.current_app.config.get( "AT_ITEMS_PER_PAGE" ), error_out = False )
+  poprzednia = flask.url_for( "applogic.route_show_absences", page = nieobecnosci.prev_num ) if nieobecnosci.has_prev else None
+  nastepna = flask.url_for( "applogic.route_show_absences", page = nieobecnosci.next_num ) if nieobecnosci.has_next else None
   return flask.render_template( "applogic/show_absences.html", title = "Show own absences", user = uzytkownik, absences_pagination = nieobecnosci, absences = nieobecnosci.items, page = nrstrony, sort_by = sortowanie_kolumna, sort_order = sortowanie_porzadek, ppage = poprzednia, npage = nastepna )
 
 
@@ -101,30 +99,9 @@ def route_export_absences( nazwauzytkownika = None ):
 # ~ https://www.designedbyaturtle.co.uk/how-to-force-the-download-of-a-file-with-http-headers-and-php/
 # ~ https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Disposition
 # ~ https://flask.palletsprojects.com/en/1.1.x/api/#flask.make_response
-  lcuser = None
-  if nazwauzytkownika is None:
-    if flask_login.current_user.role == 'P':
-      lcuser = None
-      czyje = 'team'
-    else:
-      raise werkzeug.exceptions.Forbidden
-  else:
-    if nazwauzytkownika == flask_login.current_user.username:
-      lcuser = flask_login.current_user
-      czyje = 'own'
-    else:
-      if flask_login.current_user.role == 'P':
-        lcuser = models.User.query.filter_by( username = nazwauzytkownika ).first()
-        if lcuser is None:
-          raise werkzeug.exceptions.Forbidden
-        else:
-          if lcuser in flask_login.current_user.reports:
-            czyje = lcuser.username
-          else:
-            raise werkzeug.exceptions.Forbidden
-      else:
-        raise werkzeug.exceptions.Forbidden
-  nieobecnosci = flask_login.current_user.returnAbsences( lcuser ).order_by( models.Absence.ts_absence_start ).all()
+  (nieobecnosci, uzytkownik) = flask_login.current_user.getRelevantAbsences( nazwauzytkownika )
+  nieobecnosci = nieobecnosci.order_by( models.Absence.ts_absence_start ).all()
+  czyje = 'team' if nazwauzytkownika is None else ('own' if nazwauzytkownika == flask_login.current_user.username else nazwauzytkownika)
   contentDisposition = '"'.join( ['attachment; filename=', '_'.join( [ 'absences', flask_login.current_user.username, czyje, datetime.datetime.utcnow().strftime( "%Y%m%d%H%M" )] ) +'.csv', "'"] )
   odpowiedz = flask.make_response( flask.render_template( 'applogic/export_absences.csv', absences = nieobecnosci ) )
   odpowiedz.headers['Content-Type'] = 'application/octet-stream; charset=utf-8'

@@ -60,7 +60,7 @@ function date_vis_changed( poleZmienione, errPole, errTresc ) {
 //~ 1. Czy daty sa w przyszlosci.
 //~ 2. Czy daty sa wypelnione.
 //~ 3. Czy daty sa poprawne. https://www.w3schools.com/js/js_validation.asp
-  alert( "date_vis_changed: " +poleZmienione +", " +errPole +", " +errTresc );
+  //~ alert( "date_vis_changed: " +poleZmienione +", " +errPole +", " +errTresc );
   document.getElementById("ts_absence_start_vis").className = "form-control";
   document.getElementById("errMsgStart").innerHTML = null;
   document.getElementById("ts_absence_end_vis").className = "form-control";
@@ -77,53 +77,7 @@ function date_vis_changed( poleZmienione, errPole, errTresc ) {
     document.getElementById( poleZmienione +"_vis").value = moment( moment.utc( document.getElementById( poleZmienione ).value ).format() ).format( vis_format );
     document.getElementById("submit").removeAttribute( "disabled" );
   }
-  console.log( "X" +document.getElementById('ts_absence_start').value +"X X" +document.getElementById('ts_absence_end').value +"X" );
-}
-
-function date_start_vis_changed() {
-//~ TODO:
-//~ Potrzebna szczegolowa walidacja:
-//~ 1. Czy daty sa w przyszlosci.
-//~ 2. Czy daty sa wypelnione.
-//~ 3. Czy daty sa poprawne. https://www.w3schools.com/js/js_validation.asp
-  alert( "date_start_vis_changed" );
-  document.getElementById("ts_absence_start_vis").className = "form-control";
-  document.getElementById("errMsgStart").innerHTML = null;
-  document.getElementById("ts_absence_end_vis").className = "form-control";
-  document.getElementById("errMsgEnd").innerHTML = null;
-  if( !moment( document.getElementById('ts_absence_start_vis').value, "DD/MM/YYYY HH:mm" ).isValid() ) {
-    document.getElementById("ts_absence_start_vis").className += " is-invalid";
-    document.getElementById("errMsgStart").innerHTML = "Absence start date or time is invalid. Please correct.";
-    document.getElementById("submit").setAttribute( "disabled", true )
-  } else {
-    document.getElementById('ts_absence_start').value = moment.utc( moment( document.getElementById('ts_absence_start_vis').value, "DD/MM/YYYY HH:mm" ).format() ).format( "YYYY-MM-DD HH:mm:ss" );
-    document.getElementById('ts_absence_start_vis').value = moment( moment.utc( document.getElementById('ts_absence_start').value ).format() ).format( "DD/MM/YYYY HH:mm" );
-    document.getElementById("submit").removeAttribute( "disabled" );
-  }
-  console.log( "X" +document.getElementById('ts_absence_start').value +"X X" +document.getElementById('ts_absence_end').value +"X" );
-}
-
-function date_end_vis_changed() {
-//~ TODO:
-//~ Potrzebna szczegolowa walidacja:
-//~ 1. Czy daty sa w przyszlosci.
-//~ 2. Czy daty sa wypelnione.
-//~ 3. Czy daty sa poprawne. https://www.w3schools.com/js/js_validation.asp
-  alert( "date_end_vis_changed" );
-  document.getElementById("ts_absence_start_vis").className = "form-control";
-  document.getElementById("errMsgStart").innerHTML = null;
-  document.getElementById("ts_absence_end_vis").className = "form-control";
-  document.getElementById("errMsgEnd").innerHTML = null;
-  if( !moment( document.getElementById('ts_absence_end_vis').value, "DD/MM/YYYY HH:mm" ).isValid() ) {
-    document.getElementById("ts_absence_end_vis").className += " is-invalid";
-    document.getElementById("errMsgEnd").innerHTML = "Absence end date or time is invalid. Please correct.";
-    document.getElementById("submit").setAttribute( "disabled", true )
-  } else {
-    document.getElementById('ts_absence_end').value = moment.utc( moment( document.getElementById('ts_absence_end_vis').value, "DD/MM/YYYY HH:mm" ).format() ).format( "YYYY-MM-DD HH:mm:ss" );
-    document.getElementById('ts_absence_end_vis').value = moment( moment.utc( document.getElementById('ts_absence_end').value ).format() ).format( "DD/MM/YYYY HH:mm" );
-    document.getElementById("submit").removeAttribute( "disabled" );
-  }
-  console.log( "X" +document.getElementById('ts_absence_start').value +"X X" +document.getElementById('ts_absence_end').value +"X" );
+  //~ console.log( "X" +document.getElementById('ts_absence_start').value +"X X" +document.getElementById('ts_absence_end').value +"X" );
 }
 
 function validateNewAbsence() {
@@ -165,3 +119,51 @@ function zaladowaneBodyOld() {
   
   document.getElementById('ts_absence_start_vis').value = moment( moment.utc( przychodzaca ).format() ).format( "DD/MM/YYYY HH:mm" );
 }
+
+function date_start_vis_changed_old() {
+//~ TODO:
+//~ Potrzebna szczegolowa walidacja:
+//~ 1. Czy daty sa w przyszlosci.
+//~ 2. Czy daty sa wypelnione.
+//~ 3. Czy daty sa poprawne. https://www.w3schools.com/js/js_validation.asp
+  alert( "date_start_vis_changed" );
+  document.getElementById("ts_absence_start_vis").className = "form-control";
+  document.getElementById("errMsgStart").innerHTML = null;
+  document.getElementById("ts_absence_end_vis").className = "form-control";
+  document.getElementById("errMsgEnd").innerHTML = null;
+  if( !moment( document.getElementById('ts_absence_start_vis').value, "DD/MM/YYYY HH:mm" ).isValid() ) {
+    document.getElementById("ts_absence_start_vis").className += " is-invalid";
+    document.getElementById("errMsgStart").innerHTML = "Absence start date or time is invalid. Please correct.";
+    document.getElementById("submit").setAttribute( "disabled", true )
+  } else {
+    document.getElementById('ts_absence_start').value = moment.utc( moment( document.getElementById('ts_absence_start_vis').value, "DD/MM/YYYY HH:mm" ).format() ).format( "YYYY-MM-DD HH:mm:ss" );
+    document.getElementById('ts_absence_start_vis').value = moment( moment.utc( document.getElementById('ts_absence_start').value ).format() ).format( "DD/MM/YYYY HH:mm" );
+    document.getElementById("submit").removeAttribute( "disabled" );
+  }
+  console.log( "X" +document.getElementById('ts_absence_start').value +"X X" +document.getElementById('ts_absence_end').value +"X" );
+}
+
+function date_end_vis_changed_old() {
+//~ TODO:
+//~ Potrzebna szczegolowa walidacja:
+//~ 1. Czy daty sa w przyszlosci.
+//~ 2. Czy daty sa wypelnione.
+//~ 3. Czy daty sa poprawne. https://www.w3schools.com/js/js_validation.asp
+  alert( "date_end_vis_changed" );
+  document.getElementById("ts_absence_start_vis").className = "form-control";
+  document.getElementById("errMsgStart").innerHTML = null;
+  document.getElementById("ts_absence_end_vis").className = "form-control";
+  document.getElementById("errMsgEnd").innerHTML = null;
+  if( !moment( document.getElementById('ts_absence_end_vis').value, "DD/MM/YYYY HH:mm" ).isValid() ) {
+    document.getElementById("ts_absence_end_vis").className += " is-invalid";
+    document.getElementById("errMsgEnd").innerHTML = "Absence end date or time is invalid. Please correct.";
+    document.getElementById("submit").setAttribute( "disabled", true )
+  } else {
+    document.getElementById('ts_absence_end').value = moment.utc( moment( document.getElementById('ts_absence_end_vis').value, "DD/MM/YYYY HH:mm" ).format() ).format( "YYYY-MM-DD HH:mm:ss" );
+    document.getElementById('ts_absence_end_vis').value = moment( moment.utc( document.getElementById('ts_absence_end').value ).format() ).format( "DD/MM/YYYY HH:mm" );
+    document.getElementById("submit").removeAttribute( "disabled" );
+  }
+  console.log( "X" +document.getElementById('ts_absence_start').value +"X X" +document.getElementById('ts_absence_end').value +"X" );
+}
+
+

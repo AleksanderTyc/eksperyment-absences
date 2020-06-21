@@ -1,4 +1,7 @@
 <tr>
+              {% if user is none %}          
+  <td>{{ absence.employee.username }}</td>
+              {% endif %}
   <td>{{ moment( absence.ts_absence_start ).format( "DD/MM/YY HH:mm" ) }}</td>
   <td>{{ moment( absence.ts_absence_end ).format( "DD/MM/YY HH:mm" ) }}</td>
   <td>{{ absence.absence_category_label.absence_category_description }}</td>
