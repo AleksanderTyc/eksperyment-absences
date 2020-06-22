@@ -47,7 +47,7 @@
               {{ render_nav_item( 'applogic.route_new_absence', 'New absence' ) }}
               {{ render_nav_item( 'applogic.route_show_absences', 'View absences', nazwauzytkownika = current_user.username ) }}
               {{ render_nav_item( 'applogic.route_export_absences', 'Download absences', nazwauzytkownika = current_user.username ) }}
-              {{ render_nav_item( 'applogic.route_edit_own_profile', 'Edit Profile' ) }}
+              {{ render_nav_item( 'applogic.route_edit_profile', 'Edit Profile', nazwauzytkownika = current_user.username ) }}
               {{ render_nav_item( 'auth.route_password_change', 'Change password' ) }}
               {{ render_nav_item( 'auth.route_signout', 'Log off (' +current_user.username + ')' ) }}
             {% else %}

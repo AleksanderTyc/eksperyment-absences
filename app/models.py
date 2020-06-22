@@ -94,6 +94,21 @@ class User( flask_login.UserMixin, bazadanych.Model ):
           raise werkzeug.exceptions.Forbidden
     return (flask_login.current_user.returnAbsences( lcuser ), lcuser)
 
+  def check_email_on_edit( self, checked_email ):
+    return (0 == bazadanych.session.execute( "SELECT count( * ) FROM users WHERE (id != {}) AND (email = \"{}\");".format( self.id, checked_email) ).first()[0])
+
+  def check_username_on_edit( self, checked_username ):
+    return (0 == bazadanych.session.execute( "SELECT count( * ) FROM users WHERE (id != {}) AND (username = \"{}\");".format( self.id, checked_username) ).first()[0])
+
+  def getTeamMember( self, nazwauzytkownika ):
+    lcuser = User.query.filter_by( username = nazwauzytkownika ).first()
+    if lcuser is None:
+      raise werkzeug.exceptions.Forbidden
+    else:
+      if lcuser not in flask_login.current_user.reports:
+        raise werkzeug.exceptions.Forbidden
+    return lcuser
+
 
 class Absence( bazadanych.Model ):
   __tablename__ = "absences"

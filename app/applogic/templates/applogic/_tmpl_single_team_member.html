@@ -4,7 +4,7 @@
       <h4 class="card-title">{{ dep_report.name }} {{ dep_report.surname }}</h4>
       <p class="card-text">{{ dep_report.aboutme }}</p>
       <p>
-        <a href="#"><button type="button" class="btn btn-outline-secondary">Edit</button></a>
+        <a href="{{ url_for( 'applogic.route_edit_profile',    nazwauzytkownika = dep_report.username ) }}"><button type="button" class="btn btn-outline-secondary">Edit</button></a>
         <a href="{{ url_for( 'applogic.route_show_absences',   nazwauzytkownika = dep_report.username ) }}"><button class="btn btn-outline-secondary">View absences</button></a>
         <a href="{{ url_for( 'applogic.route_export_absences', nazwauzytkownika = dep_report.username ) }}"><button class="btn btn-outline-secondary">Download absences</button></a>
       </p>

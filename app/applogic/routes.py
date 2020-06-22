@@ -22,7 +22,7 @@ def route_headpage():
   return flask.render_template( "applogic/index.html", title = "Main", user = uzytkownik, absences = nieobecnosci.items )
 
 
-@application_logic.route( '/edit_profile', methods = ['GET', 'POST'] )
+@application_logic.route( '/zepsuj_edit_profile', methods = ['GET', 'POST'] )
 @flask_login.login_required
 def route_edit_own_profile():
   # ~ TODO:
@@ -46,7 +46,8 @@ def route_edit_own_profile():
     formatka.name.data = uzytkownik.name
     formatka.surname.data = uzytkownik.surname
     formatka.username.data = uzytkownik.username
-    formatka.mgrusername.data = uzytkownik.manager.username if uzytkownik.mgrid is not None else None
+    formatka.mgrusername.choices = [(kierownik.id, kierownik.username) for kierownik in models.User.query.filter_by( role = 'P' ).order_by( "username" )]
+    formatka.mgrusername.data = uzytkownik.mgrid
     formatka.role.data = uzytkownik.role
     formatka.email.data = uzytkownik.email
     formatka.aboutme.data = uzytkownik.aboutme
@@ -58,6 +59,61 @@ def route_edit_own_profile():
     bazadanych.session.commit()
     flask.flash( "User profile updated" )
     return flask.redirect( flask.url_for( "applogic.route_headpage" ) )
+  return flask.render_template( "applogic/edit_profile.html", title = "Edit own profile", user = uzytkownik, form = formatka, editablefields = pola_do_edycji )
+
+
+@application_logic.route( '/edit_profile/<nazwauzytkownika>', methods = ['GET', 'POST'] )
+@flask_login.login_required
+def route_edit_profile( nazwauzytkownika ):
+  # ~ TODO:
+    # ~ - manager field when showing CEO - done
+    # ~ - manager field as choice when applicable
+    # ~ - email validation - correct and unique
+    # ~ - mgr options - user name validation - unique
+    # ~ - mgr options - role as radio button
+    # ~ - mgr options - role modification check - are you sure, only when downgrading, really
+    # ~ - mgr options - mgr name modification check - are you sure, check for real modification
+    # ~ - mgr options - editable fields when editing existing profile: email, role, mgr name
+    # ~ - mgr options - editable fields when creating new user: name, surname, username, email, role, mgr name
+    # ~ - mgr options - create new user: input profile details, validate, insert to DB, send email to the new user
+
+  formatka = forms.UserProfileForm()
+  if nazwauzytkownika == flask_login.current_user.username:
+    uzytkownik = flask_login.current_user
+    pola_do_edycji = ['name', 'surname', 'email', 'aboutme']
+    formatka.mgrusername.choices = [(kierownik.id, kierownik.username) for kierownik in models.User.query.filter_by( role = 'P' ).order_by( "username" ) if kierownik.username != nazwauzytkownika]
+  else:
+    uzytkownik = flask_login.current_user.getTeamMember( nazwauzytkownika )
+    pola_do_edycji = ['email', 'role', 'mgrusername']
+    formatka.mgrusername.choices = [(kierownik.id, kierownik.username) for kierownik in models.User.query.filter_by( role = 'P' ).order_by( "username" )]
+  formatka.name.data = uzytkownik.name
+  formatka.surname.data = uzytkownik.surname
+  formatka.username.data = uzytkownik.username
+  formatka.mgrusername.data = uzytkownik.mgrid
+  formatka.role.data = uzytkownik.role
+  formatka.email.data = uzytkownik.email
+  formatka.aboutme.data = uzytkownik.aboutme
+
+  if flask.request.method == 'POST':
+    for pole in flask.request.form.keys():
+      if pole in pola_do_edycji:
+        obiekt = getattr( formatka, pole )
+        setattr( obiekt, 'data', int( flask.request.form.getlist( pole )[0] ) if pole == 'mgrusername' else flask.request.form.getlist( pole )[0] )
+    
+    if formatka.validate():
+      uzytkownik.name = formatka.name.data
+      uzytkownik.surname = formatka.surname.data
+      # ~ uzytkownik.username = formatka.username.data
+      if uzytkownik.role != formatka.role.data and uzytkownik.role == 'P':
+        for pracownik in uzytkownik.reports:
+          pracownik.mgrid = flask_login.current_user.id
+      uzytkownik.mgrid = formatka.mgrusername.data
+      uzytkownik.role = formatka.role.data
+      uzytkownik.email = formatka.email.data
+      uzytkownik.aboutme = formatka.aboutme.data
+      bazadanych.session.commit()
+      flask.flash( "User profile updated" )
+      return flask.redirect( flask.url_for( "applogic.route_headpage" ) )
   return flask.render_template( "applogic/edit_profile.html", title = "Edit own profile", user = uzytkownik, form = formatka, editablefields = pola_do_edycji )
 
 

@@ -3,6 +3,15 @@
 {% from 'bootstrap/form.html' import render_field %}
 
 {% block absence_content %}
+<script>
+function role_field_changed() {
+  alert( "role_field_changed" );
+}
+
+function mgr_field_changed() {
+  alert( "mgr_field_changed" );
+}
+</script>
 <div class="container-fluid">
   <div class="row welcome text-center">
     <div class="col-12">
@@ -36,31 +45,71 @@
     <div class="form-group">
             <label class="form-control-label" for="username">UserId</label>
 {% if "username" in editablefields %}
-            <textarea class="form-control" id="username" name="username">{{ form.username.data }}</textarea>
+            <input class="form-control" id="username" name="username">{{ form.username.data }}</input>
+                {% if form.errors[ "username" ] %}
+                  <script>
+                    document.getElementById( "username" ).className += " is-invalid";
+                  </script>
+                  {% for blad in form.errors[ "username" ] %}
+                    <span style="color:red;">[ {{ blad }} ]</span>
+                  {% endfor %}
+                {% endif %}
 {% else %}
             <input class="form-control" id="username" name="username" type="text" value = "{{ form.username.data }}" disabled>
 {% endif %}
     </div>
    
     <div class="form-group">
-            <label class="form-control-label" for="mgrusername">Manager</label>
-{% if "mgrusername" in editablefields and form.mgrusername.data is not none %}
-<!--
-autofocus
--->
+      <div class="form-inline">
+            <label class="form-control-label mr-3" for="role">Managerial role</label>
+            {{ form.role.data }}
+{% if "role" in editablefields %}
+            <select onchange="role_field_changed()" class="form-control" id="role" name="role" autofocus>
 {% else %}
-  {% if form.mgrusername.data is none %}
-            <input class="form-control" id="mgrusername" name="mgrusername" type="text" value = "CEO" disabled>
-  {% else %}
-            <input class="form-control" id="mgrusername" name="mgrusername" type="text" value = "{{ form.mgrusername.data }}" disabled>
-  {% endif %}
+            <select class="form-control" id="role" name="role" disabled>
 {% endif %}
+{% if form.role.data == 'P' %} <option selected value="P">Yes</option> {% else %} <option value="P">Yes</option> {% endif %}
+{% if form.role.data == 'B' %} <option selected value="B">No </option> {% else %} <option value="B">No </option> {% endif %}
+            </select>
+      </div>
+    </div>
+   
+    <div class="form-group">
+      <div class="form-inline">
+            <label class="form-control-label mr-3" for="mgrusername">Manager</label>
+{% if form.mgrusername.data is none %}
+            <input class="form-control" id="mgrusername" name="mgrusername" type="text" value = "CEO" disabled>
+{% else %}
+            {{ form.mgrusername.data }} {{ form.mgrusername.choices }}
+  {% if "mgrusername" in editablefields %}
+            <select onchange="mgr_field_changed()" class="form-control" id="mgrusername" name="mgrusername">
+  {% else %}
+            <select class="form-control" id="mgrusername" name="mgrusername" disabled>
+  {% endif %}
+              {% for opcja in form.mgrusername.choices %}
+                {% if opcja[ 0 ] == form.mgrusername.data %}
+                  <option selected value="{{ opcja[ 0 ] }}">{{ opcja[ 1 ] }}</option>
+                {% else %}
+                  <option value="{{ opcja[ 0 ] }}">{{ opcja[ 1 ] }}</option>
+                {% endif %}
+              {% endfor %}
+            </select>
+{% endif %}
+      </div>
     </div>
    
     <div class="form-group">
             <label class="form-control-label" for="email">Email</label>
 {% if "email" in editablefields %}
             <input class="form-control" id="email" name="email" type="text" value = "{{ form.email.data }}">
+                {% if form.errors[ "email" ] %}
+                  <script>
+                    document.getElementById( "email" ).className += " is-invalid";
+                  </script>
+                  {% for blad in form.errors[ "email" ] %}
+                    <span style="color:red;">[ {{ blad }} ]</span>
+                  {% endfor %}
+                {% endif %}
 {% else %}
             <input class="form-control" id="email" name="email" type="text" value = "{{ form.email.data }}" disabled>
 {% endif %}
@@ -69,14 +118,14 @@ autofocus
     <div class="form-group">
             <label class="form-control-label" for="aboutme">About</label>
 {% if "aboutme" in editablefields %}
-            <textarea class="form-control" id="aboutme" name="aboutme">{{ form.aboutme.data }}</textarea autofocus>
+            <textarea class="form-control" id="aboutme" name="aboutme" autofocus>{{ form.aboutme.data }}</textarea>
 {% else %}
             <textarea class="form-control" id="aboutme" name="aboutme" disabled>{{ form.aboutme.data }}</textarea>
 {% endif %}
     </div>
    
     <div class="form-group">
-            <input class="btn btn-secondary btn-md" id="submit" name="submit" type="submit" onclick="return validateNewAbsence()" value="Save">
+            <input class="btn btn-secondary btn-md" id="submit" name="submit" type="submit" value="Save">
     </div>
         </form>
 </div>

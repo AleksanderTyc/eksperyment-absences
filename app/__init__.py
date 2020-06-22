@@ -58,6 +58,7 @@ def create_app( config_class = config.Config ):
   from app.applogic import application_logic as bp_application_logic
   lc_app.register_blueprint( bp_application_logic )
   
+  # ~ @errors.app_errorhandler( 401 ) - z BluePrint, TODO: sprawdzic ze skladnia werkzeug.exceptions.Unauthorized, zrodlo Mega Tutorial
   @lc_app.errorhandler( werkzeug.exceptions.Unauthorized )
   def route_error_401( blad ):
     print( "AT: werkzeug.exceptions.Unauthorized", blad.get_response() )
