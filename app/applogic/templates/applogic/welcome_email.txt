@@ -1,0 +1,13 @@
+Dear web app User,
+
+Your manager has created a user account for you. To access the application you have to set your password.
+
+Please copy and paste this link to your web browser to perform the action:
+{{ password_reset_link }}
+
+After setting your password, please go to Edit Profile page and check your presonal details.
+
+Please ignore this email if you did not request access to the application.
+
+Sincerely
+Web app Admin

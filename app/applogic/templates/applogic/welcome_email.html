@@ -1,0 +1,14 @@
+<p>Dear web app User,
+</p>
+<p>Your manager has created a user account for you. To access the application you have to set your password.
+</p>
+<p>Please follow this <a href="{{ password_reset_link }}">link</a> to perform the action. Alternatively, please copy and paste this link to your web browser:<br>
+{{ password_reset_link }}
+</p>
+<p>After setting your password, please go to <a href="{{ url_for( 'applogic.route_edit_profile', nazwauzytkownika = dep_report.username ) }}">Edit Profile</a> page and check your presonal details.
+</p>
+<p>Please ignore this email if you did not request access to the application.
+</p>
+<p>Sincerely<br>
+Web app Admin
+</p>

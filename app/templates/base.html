@@ -1,6 +1,17 @@
 {% from 'bootstrap/nav.html' import render_nav_item %}
 {% from 'bootstrap/utils.html' import render_messages %}
 
+{% macro form_field_error( field_name ) -%}
+                {% if form.errors[ field_name ] %}
+                  <script>
+                    document.getElementById( "{{ field_name }}" ).className += " is-invalid";
+                  </script>
+                  {% for blad in form.errors[ field_name ] %}
+                    <span style="color:red;">[ {{ blad }} ]</span>
+                  {% endfor %}
+                {% endif %}
+{% endmacro %}
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -78,30 +89,19 @@
   
             <hr>
     <footer>
-<!--
-    <nav class="navbar sticky-bottom">
--->
-<!--
-      <div class="container-fluid padding fixed-bottom">
--->
       <div class="container-fluid padding">
         <div class="row text-center">
           <div class="col-12 padding">
             <p>
               Project Absences maintained by Aleks Tyc.
             </p>
-<!--
             <p>
-              <a style="padding:0.8rem" href="#"><img style="height:1.5rem" src="static/img/GitHub-Mark-64px.png"></a>
-              <a style="padding:0.8rem" href="#"><img style="height:1.5rem" src="static/img/LI-In-Bug.png"></a>
+              <a style="padding:0.8rem" href="#"><img style="height:1.5rem" src="/static/img/GitHub-Mark-64px.png"></a>
+              <a style="padding:0.8rem" href="#"><img style="height:1.5rem" src="/static/img/LI-In-Bug.png"></a>
             </p>
--->
           </div>
         </div>
       </div>
-<!--
-    </nav>
--->
     </footer>
 
     {% block scripts %}
