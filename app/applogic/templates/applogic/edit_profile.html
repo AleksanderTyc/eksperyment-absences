@@ -37,30 +37,30 @@ function mgr_field_changed() {
             <label class="form-control-label" for="name">Name</label>
 {% if "name" in editablefields %}
             <input class="form-control" id="name" name="name" type="text" value="{{ form.name.data }}">
-            {{ form_field_error( 'name' ) }}
 {% else %}
             <input class="form-control" id="name" name="name" type="text" value="{{ form.name.data }}" disabled>
 {% endif %}
+            {{ form_field_error( 'name' ) }}
     </div>
    
     <div class="form-group">
             <label class="form-control-label" for="surname">Surname</label>
 {% if "surname" in editablefields %}
             <input class="form-control" id="surname" name="surname" type="text" value="{{ form.surname.data }}">
-            {{ form_field_error( 'surname' ) }}
 {% else %}
             <input class="form-control" id="surname" name="surname" type="text" value="{{ form.surname.data }}" disabled>
 {% endif %}
+            {{ form_field_error( 'surname' ) }}
     </div>
    
     <div class="form-group">
             <label class="form-control-label" for="username">UserId</label>
 {% if "username" in editablefields %}
             <input class="form-control" id="username" name="username" type="text" value="{{ form.username.data }}">
-            {{ form_field_error( 'username' ) }}
 {% else %}
             <input class="form-control" id="username" name="username" type="text" value="{{ form.username.data }}" disabled>
 {% endif %}
+            {{ form_field_error( 'username' ) }}
     </div>
    
     <div class="form-group">
@@ -106,20 +106,20 @@ function mgr_field_changed() {
             <label class="form-control-label" for="email">Email</label>
 {% if "email" in editablefields %}
             <input class="form-control" id="email" name="email" type="text" value="{{ form.email.data }}">
-            {{ form_field_error( 'email' ) }}
 {% else %}
             <input class="form-control" id="email" name="email" type="text" value="{{ form.email.data }}" disabled>
 {% endif %}
+            {{ form_field_error( 'email' ) }}
     </div>
    
     <div class="form-group">
             <label class="form-control-label" for="aboutme">About</label>
 {% if "aboutme" in editablefields %}
             <textarea class="form-control" id="aboutme" name="aboutme" autofocus>{{ form.aboutme.data }}</textarea>
-            {{ form_field_error( 'aboutme' ) }}
 {% else %}
             <textarea class="form-control" id="aboutme" name="aboutme" disabled>{{ form.aboutme.data }}</textarea>
 {% endif %}
+            {{ form_field_error( 'aboutme' ) }}
     </div>
    
     <div class="form-group">

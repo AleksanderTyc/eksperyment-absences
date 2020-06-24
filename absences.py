@@ -3,6 +3,7 @@
 # Chyba niepotrzebne [aleks@f31 microblog]$ python -m venv venv
 # [aleks@f31 microblog]$ . venv/bin/activate
 # (venv) $ export FLASK_APP=absences.py
+# (venv) $ export MAIL_PASSWORD=wiadomoJakie
 # Przyklady uruchomienia:
 # flask run
 # flask run -h 0.0.0.0 -p 5000

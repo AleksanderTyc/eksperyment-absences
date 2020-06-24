@@ -42,6 +42,13 @@ def route_new_profile():
   uzytkownik = None
   pola_do_edycji = ['name', 'surname', 'username', 'email', 'role', 'mgrusername']
   formatka = forms.UserProfileForm()
+  
+  pola_formularza = ["name", "surname", "username", "mgrusername", "role", "email", "aboutme"]
+  for pole in pola_formularza:
+    if pole not in pola_do_edycji:
+      obiekt = getattr( formatka, pole )
+      setattr( obiekt, 'validators', [] )
+
   formatka.mgrusername.choices = [(kierownik.id, kierownik.username) for kierownik in models.User.query.filter_by( role = 'P' ).order_by( "username" )]
   formatka.name.data = ""
   formatka.surname.data = ""
@@ -65,7 +72,7 @@ def route_new_profile():
       uzytkownik.mgrid = formatka.mgrusername.data
       uzytkownik.role = formatka.role.data
       uzytkownik.email = formatka.email.data
-      # ~ uzytkownik.aboutme = formatka.aboutme.data
+      uzytkownik.aboutme = formatka.aboutme.data
       bazadanych.session.add( uzytkownik )
       bazadanych.session.commit()
       flask.flash( "New user profile created" )
@@ -76,6 +83,14 @@ def route_new_profile():
         body = flask.render_template( 'applogic/welcome_email.txt', password_reset_link = pwr_link ),
         html = flask.render_template( 'applogic/welcome_email.html', password_reset_link = pwr_link, dep_report = uzytkownik )
         )
+      print( "route_new_profile - POST - after validate - name", formatka.name.data, type( formatka.name.data ) )
+      print( "route_new_profile - POST - after validate - surname", formatka.surname.data, type( formatka.surname.data ) )
+      print( "route_new_profile - POST - after validate - username", formatka.username.data, type( formatka.username.data ) )
+      print( "route_new_profile - POST - after validate - mgrusername", formatka.mgrusername.data, type( formatka.mgrusername.data ) )
+      print( "route_new_profile - POST - after validate - role", formatka.role.data, type( formatka.role.data ) )
+      print( "route_new_profile - POST - after validate - email", formatka.email.data, type( formatka.email.data ) )
+      print( "route_new_profile - POST - after validate - aboutme", formatka.aboutme.data, type( formatka.aboutme.data ) )
+      print( "route_new_profile - POST - after validate - HTML message", wiadomosc.html )
       email.sendEmailAsynchro( wiadomosc )
       return flask.redirect( flask.url_for( "applogic.route_headpage" ) )
   return flask.render_template( "applogic/edit_profile.html", title = "Create new profile", user = uzytkownik, form = formatka, editablefields = pola_do_edycji )
@@ -97,6 +112,7 @@ def route_edit_profile( nazwauzytkownika ):
     # ~ - mgr options - create new user: input profile details, validate, insert to DB, send email to the new user
 
   formatka = forms.UserProfileForm()
+  pola_formularza = ["name", "surname", "username", "mgrusername", "role", "email", "aboutme"]
   if nazwauzytkownika == flask_login.current_user.username:
     uzytkownik = flask_login.current_user
     pola_do_edycji = ['name', 'surname', 'email', 'aboutme']
@@ -105,6 +121,11 @@ def route_edit_profile( nazwauzytkownika ):
     uzytkownik = flask_login.current_user.getTeamMember( nazwauzytkownika )
     pola_do_edycji = ['email', 'role', 'mgrusername']
     formatka.mgrusername.choices = [(kierownik.id, kierownik.username) for kierownik in models.User.query.filter_by( role = 'P' ).order_by( "username" )]
+  for pole in pola_formularza:
+    if pole not in pola_do_edycji:
+      obiekt = getattr( formatka, pole )
+      setattr( obiekt, 'validators', [] )
+      
   formatka.name.data = uzytkownik.name
   formatka.surname.data = uzytkownik.surname
   formatka.username.data = uzytkownik.username

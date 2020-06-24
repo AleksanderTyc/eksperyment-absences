@@ -9,9 +9,9 @@ import wtforms.validators
 
 
 class UserProfileForm( flask_wtf.FlaskForm ):
-  name = wtforms.StringField( "Name", validators = [wtforms.validators.InputRequired(), wtforms.validators.Length( min = 0, max = 64 )] )
-  surname = wtforms.StringField( "Surname", validators = [wtforms.validators.InputRequired(), wtforms.validators.Length( min = 0, max = 64 )] )
-  username = wtforms.StringField( "Username", validators = [wtforms.validators.InputRequired(), wtforms.validators.Length( min = 0, max = 64 )] )
+  name = wtforms.StringField( "Name", validators = [wtforms.validators.InputRequired(), wtforms.validators.Length( min = 1, max = 64 )] )
+  surname = wtforms.StringField( "Surname", validators = [wtforms.validators.InputRequired(), wtforms.validators.Length( min = 1, max = 64 )] )
+  username = wtforms.StringField( "Username", validators = [wtforms.validators.InputRequired(), wtforms.validators.Length( min = 1, max = 64 )] )
   # ~ mgrusername = wtforms.StringField( "Manager username", validators = [wtforms.validators.InputRequired()] )
   mgrusername = wtforms.SelectField( "Manager username", validate_choice = False, coerce=int )
   role = wtforms.StringField( "Role" )
