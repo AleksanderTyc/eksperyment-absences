@@ -94,11 +94,17 @@ class User( flask_login.UserMixin, bazadanych.Model ):
           raise werkzeug.exceptions.Forbidden
     return (flask_login.current_user.returnAbsences( lcuser ), lcuser)
 
-  def check_email_on_edit( self, checked_email ):
-    return (0 == bazadanych.session.execute( "SELECT count( * ) FROM users WHERE (id != {}) AND (email = \"{}\");".format( self.id, checked_email) ).first()[0])
+  def check_email_on_edit( self, checked_email, reference_user = None ):
+    if reference_user is None:
+      return (0 == bazadanych.session.execute( "SELECT count( * ) FROM users WHERE email = \"{}\";".format( checked_email ) ).first()[0])
+    else:
+      return (0 == bazadanych.session.execute( "SELECT count( * ) FROM users WHERE (id != {}) AND (email = \"{}\");".format( reference_user.id, checked_email) ).first()[0])
 
-  def check_username_on_edit( self, checked_username ):
-    return (0 == bazadanych.session.execute( "SELECT count( * ) FROM users WHERE (id != {}) AND (username = \"{}\");".format( self.id, checked_username) ).first()[0])
+  def check_username_on_edit( self, checked_username, reference_user = None ):
+    if reference_user is None:
+      return (0 == bazadanych.session.execute( "SELECT count( * ) FROM users WHERE username = \"{}\";".format( checked_username ) ).first()[0])
+    else:
+      return (0 == bazadanych.session.execute( "SELECT count( * ) FROM users WHERE (id != {}) AND (username = \"{}\");".format( reference_user.id, checked_username) ).first()[0])
 
   def getTeamMember( self, nazwauzytkownika ):
     lcuser = User.query.filter_by( username = nazwauzytkownika ).first()
