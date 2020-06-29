@@ -8,7 +8,7 @@ The application may be accessed using a web browser both on PC and mobile device
 
 ## History
 
-The application was written as a self-development project in Spring 2020. It uses Python Flask and Bootstrap4.
+The application was written as a self-development proof of concept project in Spring 2020. It uses Python Flask and Bootstrap4.
 
 ## Give it a try
 
